@@ -28,6 +28,7 @@ enum Category {
 type Query {
   sayHello: String!
   menus: [Menu!]!
+  item(id: String!): Item!
 }
 
 type Mutation {
