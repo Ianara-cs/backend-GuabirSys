@@ -2,6 +2,53 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Item {
+  id: String!
+  name: String!
+  description: String
+  price: Decimal!
+  menuId: String!
+}
+
+"""An arbitrary-precision Decimal type"""
+scalar Decimal
+
+type Menu {
+  id: String!
+  name: String!
+  category: Category!
+  items: [Item!]!
+}
+
+enum Category {
+  KITCHEN
+  BAR
+}
+
 type Query {
   sayHello: String!
+  menus: [Menu!]!
+}
+
+type Mutation {
+  createMenu(createMenuData: CreateMenuInput!): Menu!
+  updateMenuName(updateMenuNameData: UpdateMenuNameInput!): Menu!
+  createItem(createItemData: CreateItemInput!): Item!
+}
+
+input CreateMenuInput {
+  name: String!
+  category: String!
+}
+
+input UpdateMenuNameInput {
+  id: String!
+  name: String!
+}
+
+input CreateItemInput {
+  name: String!
+  description: String
+  price: Decimal!
+  menuId: String!
 }

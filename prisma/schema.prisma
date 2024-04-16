@@ -29,3 +29,29 @@ enum Role {
   CHEF
   ATTENDANT
 }
+
+model Menu {
+  id       String   @id @default(uuid())
+  name     String
+  category Category
+  items    Item[]
+
+  @@map("menus")
+}
+
+enum Category {
+  KITCHEN
+  BAR
+}
+
+model Item {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal @db.Decimal(8, 2)
+
+  Menu   Menu   @relation(fields: [menuId], references: [id])
+  menuId String @map("menu_id")
+
+  @@map("items")
+}

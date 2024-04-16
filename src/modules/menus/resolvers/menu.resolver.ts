@@ -1,0 +1,37 @@
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { MenuService } from '../services/menu.service'
+import { Menu } from '../entities/menu.entity'
+import { CreateMenuInput } from '../inputs/create-menu.input'
+import { Item } from '../entities/item.entity'
+import { CreateItemInput } from '../inputs/create-item.input'
+import { UpdateMenuNameInput } from '../inputs/update-name-menu.input'
+
+@Resolver()
+export class MenuResolver {
+  constructor(private menuService: MenuService) {}
+
+  @Query(() => [Menu])
+  async menus() {
+    return await this.menuService.getAllMenus()
+  }
+
+  @Mutation(() => Menu)
+  async createMenu(@Args('createMenuData') createMenuInput: CreateMenuInput) {
+    const newMenu = await this.menuService.createMenu(createMenuInput)
+    return newMenu
+  }
+
+  @Mutation(() => Menu)
+  async updateMenuName(
+    @Args('updateMenuNameData') updateMenuNameInput: UpdateMenuNameInput,
+  ) {
+    const menu = await this.menuService.updateMenuName(updateMenuNameInput)
+    return menu
+  }
+
+  @Mutation(() => Item)
+  async createItem(@Args('createItemData') createItemInput: CreateItemInput) {
+    const newItem = await this.menuService.createItem(createItemInput)
+    return newItem
+  }
+}
