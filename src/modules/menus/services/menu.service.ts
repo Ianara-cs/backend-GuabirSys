@@ -48,4 +48,14 @@ export class MenuService {
 
     return newItem
   }
+
+  async deleteItem(id: string): Promise<Item> {
+    const item = await this.menuRepository.findItemById(id)
+
+    if (!item) {
+      throw new NotFoundException('Item not found!')
+    }
+    const deletedItem = await this.menuRepository.deleteItem(id)
+    return deletedItem
+  }
 }

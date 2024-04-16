@@ -10,4 +10,6 @@ export interface MenuRepository {
   createMenu(createMenu: CreateMenuDto): Promise<Menu>
   updateMenuName(updateNameMenuData: UpdateMenuNameInput): Promise<Menu>
   createItem(createItem: CreateItemInput): Promise<Item>
+  deleteItem(id: string): Promise<Item>
+  findItemById(id: string): Promise<Item>
 }

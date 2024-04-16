@@ -49,4 +49,13 @@ export class MenuPersistence implements MenuRepository {
 
     return i
   }
+
+  async deleteItem(id: string): Promise<Item> {
+    const item = await this.prisma.item.delete({ where: { id } })
+    return item
+  }
+
+  async findItemById(id: string): Promise<Item> {
+    return await this.prisma.item.findUnique({ where: { id } })
+  }
 }

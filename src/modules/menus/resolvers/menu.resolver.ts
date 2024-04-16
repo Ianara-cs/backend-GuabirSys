@@ -34,4 +34,10 @@ export class MenuResolver {
     const newItem = await this.menuService.createItem(createItemInput)
     return newItem
   }
+
+  @Mutation(() => Item)
+  async deleteItem(@Args('id') id: string) {
+    const item = await this.menuService.deleteItem(id)
+    return item
+  }
 }
