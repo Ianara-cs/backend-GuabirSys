@@ -25,10 +25,31 @@ enum Category {
   BAR
 }
 
+type Table {
+  id: String!
+  number: Int
+  nameClient: String
+  totalPeople: Int
+  tableStatus: TableStatus!
+  createdAt: DateTime!
+}
+
+enum TableStatus {
+  RESERVED
+  BUSY
+  CLOSED
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   sayHello: String!
   menus: [Menu!]!
   item(id: String!): Item!
+  tables: [Table!]!
 }
 
 type Mutation {
@@ -36,6 +57,9 @@ type Mutation {
   updateMenuName(updateMenuNameData: UpdateMenuNameInput!): Menu!
   createItem(createItemData: CreateItemInput!): Item!
   deleteItem(id: String!): Item!
+  createTable(createTableData: CreateTableInput!): Table!
+  changeTableStatus(changeTableStatusData: ChangeTableStatusInput!): Table!
+  deleteTable(id: String!): Table!
 }
 
 input CreateMenuInput {
@@ -53,4 +77,16 @@ input CreateItemInput {
   description: String
   price: Decimal!
   menuId: String!
+}
+
+input CreateTableInput {
+  number: Int
+  nameClient: String
+  totalPeople: Int
+  tableStatus: String!
+}
+
+input ChangeTableStatusInput {
+  id: String!
+  tableStatus: String!
 }

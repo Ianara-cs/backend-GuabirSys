@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { FootResolver } from './foot.resolver'
+import { CustomerServiceModule } from './modules/customer-service/customer-service.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FootResolver } from './foot.resolver'
     GlobalModule,
     UsersModule,
     MenusModule,
+    CustomerServiceModule,
   ],
   providers: [FootResolver],
 })
