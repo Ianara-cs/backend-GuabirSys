@@ -55,3 +55,20 @@ model Item {
 
   @@map("items")
 }
+
+model Table {
+  id          String      @id @default(uuid())
+  number      Int?
+  nameClient  String?     @map("name_client")
+  totalPeople Int?        @map("total_people")
+  tableStatus TableStatus @map("table_status")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  @@map("tables")
+}
+
+enum TableStatus {
+  RESERVED
+  BUSY
+  CLOSED
+}
