@@ -7,17 +7,32 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { FootResolver } from './foot.resolver'
 import { CustomerServiceModule } from './modules/customer-service/customer-service.module'
+import { NotesModule } from './modules/notes/notes.module'
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      subscriptions: {
+        'subscriptions-transport-ws': true,
+        // {
+        //   path: '/graphql',
+        //   onConnect: () => {
+        //     console.log('WebSocket connection established')
+        //   },
+        //   onDisconnect: () => {
+        //     console.log('WebSocket connection closed')
+        //   },
+        // },
+      },
     }),
     GlobalModule,
     UsersModule,
     MenusModule,
     CustomerServiceModule,
+    NotesModule,
   ],
   providers: [FootResolver],
 })
