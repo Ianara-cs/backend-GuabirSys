@@ -5,6 +5,7 @@ import { CreateMenuDto } from '../dtos/create-menu.dto'
 import { CreateItemInput } from '../inputs/create-item.input'
 import { Item } from '../entities/item.entity'
 import { UpdateMenuNameInput } from '../inputs/update-name-menu.input'
+import { UpdateItemInput } from '../inputs/update-item.input'
 
 @Injectable()
 export class MenuService {
@@ -57,6 +58,35 @@ export class MenuService {
     }
 
     return item
+  }
+
+  async updateItem({
+    id,
+    description,
+    name,
+    price,
+  }: UpdateItemInput): Promise<Item> {
+    const item = await this.getItemById(id)
+
+    if (!name) {
+      name = item.name
+    }
+
+    if (!description) {
+      description = item.description
+    }
+
+    if (!price) {
+      price = item.price
+    }
+
+    const updatedItem = await this.menuRepository.updateItem({
+      id,
+      description,
+      name,
+      price,
+    })
+    return updatedItem
   }
 
   async deleteItem(id: string): Promise<Item> {

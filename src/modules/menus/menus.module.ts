@@ -9,5 +9,6 @@ import { MenuResolver } from './resolvers/menu.resolver'
     MenuService,
     MenuResolver,
   ],
+  exports: [MenuService],
 })
 export class MenusModule {}

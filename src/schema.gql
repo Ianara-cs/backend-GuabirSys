@@ -8,6 +8,8 @@ type Item {
   description: String
   price: Decimal!
   menuId: String!
+  quantityPeople: Float!
+  imgUrl: String
 }
 
 """An arbitrary-precision Decimal type"""
@@ -45,21 +47,62 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Order {
+  id: String!
+  price: Decimal!
+  createdAt: DateTime!
+}
+
+type ItemsOnOrders {
+  id: String!
+  orderId: String!
+  itemId: String!
+  item: Item!
+  quantity: Float!
+}
+
+type OrderOutput {
+  id: String!
+  price: Decimal!
+  createdAt: DateTime!
+  items: [ItemsOnOrders!]!
+}
+
+type Note {
+  id: String!
+  total: Decimal!
+  items: [ItemsOnOrders!]!
+}
+
+type NoteItemsOutputs {
+  id: String!
+  total: Decimal!
+  items: [ItemsOnOrders!]
+}
+
 type Query {
   sayHello: String!
   menus: [Menu!]!
   item(id: String!): Item!
   tables: [Table!]!
+  order(id: String!): OrderOutput!
+  note(id: String!): NoteItemsOutputs!
+  allNotes: [Note!]!
 }
 
 type Mutation {
   createMenu(createMenuData: CreateMenuInput!): Menu!
   updateMenuName(updateMenuNameData: UpdateMenuNameInput!): Menu!
   createItem(createItemData: CreateItemInput!): Item!
+  updateItem(updateItemData: UpdateItemInput!): Item!
   deleteItem(id: String!): Item!
   createTable(createTableData: CreateTableInput!): Table!
   changeTableStatus(changeTableStatusData: ChangeTableStatusInput!): Table!
   deleteTable(id: String!): Table!
+  createOrder(createOrderData: CreateOrderInput!): Order!
+  addItemInNote(addItemNoteData: AddItemNoteInput!): Boolean!
+  removeItemInNote(idItemOrder: String!): Boolean!
+  createNote: Note!
 }
 
 input CreateMenuInput {
@@ -79,6 +122,13 @@ input CreateItemInput {
   menuId: String!
 }
 
+input UpdateItemInput {
+  id: String!
+  name: String
+  description: String
+  price: Decimal
+}
+
 input CreateTableInput {
   number: Int
   nameClient: String
@@ -89,4 +139,23 @@ input CreateTableInput {
 input ChangeTableStatusInput {
   id: String!
   tableStatus: String!
+}
+
+input CreateOrderInput {
+  order: [CreateOrder!]!
+}
+
+input CreateOrder {
+  itemId: String!
+  quantity: Float!
+}
+
+input AddItemNoteInput {
+  noteId: String!
+  quantity: Float!
+  itemId: String!
+}
+
+type Subscription {
+  orderAdded: Order!
 }

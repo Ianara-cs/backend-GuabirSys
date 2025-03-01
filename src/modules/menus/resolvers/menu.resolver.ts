@@ -5,6 +5,7 @@ import { CreateMenuInput } from '../inputs/create-menu.input'
 import { Item } from '../entities/item.entity'
 import { CreateItemInput } from '../inputs/create-item.input'
 import { UpdateMenuNameInput } from '../inputs/update-name-menu.input'
+import { UpdateItemInput } from '../inputs/update-item.input'
 
 @Resolver()
 export class MenuResolver {
@@ -12,6 +13,7 @@ export class MenuResolver {
 
   @Query(() => [Menu])
   async menus() {
+    console.log('RRRRRRRRRR')
     return await this.menuService.getAllMenus()
   }
 
@@ -38,6 +40,12 @@ export class MenuResolver {
   async createItem(@Args('createItemData') createItemInput: CreateItemInput) {
     const newItem = await this.menuService.createItem(createItemInput)
     return newItem
+  }
+
+  @Mutation(() => Item)
+  async updateItem(@Args('updateItemData') updateItemInput: UpdateItemInput) {
+    const menu = await this.menuService.updateItem(updateItemInput)
+    return menu
   }
 
   @Mutation(() => Item)

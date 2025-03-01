@@ -12,7 +12,7 @@ export class Item {
   name: string
 
   @Field({ nullable: true })
-  description: string
+  description?: string
 
   @Field(() => GraphQLDecimal)
   @Type(() => Object)
@@ -21,4 +21,10 @@ export class Item {
 
   @Field()
   menuId: string
+
+  @Field()
+  quantityPeople: number
+
+  @Field({ nullable: true })
+  imgUrl?: string
 }
