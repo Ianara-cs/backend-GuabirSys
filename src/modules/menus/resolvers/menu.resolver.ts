@@ -13,8 +13,12 @@ export class MenuResolver {
 
   @Query(() => [Menu])
   async menus() {
-    console.log('RRRRRRRRRR')
-    return await this.menuService.getAllMenus()
+    return await this.menuService.getMenus()
+  }
+
+  @Query(() => [Menu])
+  async menusWithItems() {
+    return await this.menuService.getMenusWithItems()
   }
 
   @Mutation(() => Menu)

@@ -7,6 +7,7 @@ import { UpdateMenuNameInput } from '../../inputs/update-name-menu.input'
 
 export interface MenuRepository {
   findAllMenus(): Promise<Menu[]>
+  findAllMenusWithItems(): Promise<Menu[]>
   findMenuById(id: string): Promise<Menu>
   createMenu(createMenu: CreateMenuDto): Promise<Menu>
   updateMenuName(updateNameMenuData: UpdateMenuNameInput): Promise<Menu>

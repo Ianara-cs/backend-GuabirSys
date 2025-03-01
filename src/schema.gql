@@ -83,6 +83,7 @@ type NoteItemsOutputs {
 type Query {
   sayHello: String!
   menus: [Menu!]!
+  menusWithItems: [Menu!]!
   item(id: String!): Item!
   tables: [Table!]!
   order(id: String!): OrderOutput!
