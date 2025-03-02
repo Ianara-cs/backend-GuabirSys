@@ -31,7 +31,13 @@ export class MenuResolver {
   async updateMenu(
     @Args('updateMenuData') updateMenuNameInput: UpdateMenuInput,
   ) {
-    const menu = await this.menuService.updateMenuName(updateMenuNameInput)
+    const menu = await this.menuService.updateMenu(updateMenuNameInput)
+    return menu
+  }
+
+  @Mutation(() => Menu)
+  async deleteMenu(@Args('id') id: string) {
+    const menu = await this.menuService.deleteMenu(id)
     return menu
   }
 

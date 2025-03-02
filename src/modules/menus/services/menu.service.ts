@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { MenuRepository } from '../repositories/interfaces/menu.repository'
 import { Menu } from '../entities/menu.entity'
 import { CreateMenuDto } from '../dtos/create-menu.dto'
@@ -22,12 +27,22 @@ export class MenuService {
     return await this.menuRepository.findAllMenusWithItems()
   }
 
+  async getMenuById(id: string): Promise<Menu> {
+    const menu = await this.menuRepository.findMenuById(id)
+
+    if (!menu) {
+      throw new NotFoundException('Menu not found!')
+    }
+
+    return menu
+  }
+
   async createMenu({ name, category }: CreateMenuDto): Promise<Menu> {
     const newMenu = await this.menuRepository.createMenu({ name, category })
     return newMenu
   }
 
-  async updateMenuName({ id, name, category }: UpdateMenuInput): Promise<Menu> {
+  async updateMenu({ id, name, category }: UpdateMenuInput): Promise<Menu> {
     const menu = await this.menuRepository.findMenuById(id)
 
     if (!menu) {
@@ -40,6 +55,17 @@ export class MenuService {
       category,
     })
     return updatedMenu
+  }
+
+  async deleteMenu(id: string): Promise<Menu> {
+    const menu = await this.getMenuById(id)
+
+    if (menu.items.length > 0) {
+      throw new BadRequestException('Undeletable menu!')
+    }
+
+    const deletedMenu = await this.menuRepository.deleteMenu(id)
+    return deletedMenu
   }
 
   async createItem({

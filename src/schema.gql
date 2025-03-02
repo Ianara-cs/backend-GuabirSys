@@ -94,6 +94,7 @@ type Query {
 type Mutation {
   createMenu(createMenuData: CreateMenuInput!): Menu!
   updateMenu(updateMenuData: UpdateMenuInput!): Menu!
+  deleteMenu(id: String!): Menu!
   createItem(createItemData: CreateItemInput!): Item!
   updateItem(updateItemData: UpdateItemInput!): Item!
   deleteItem(id: String!): Item!

@@ -82,7 +82,36 @@ export class MenuPersistence implements MenuRepository {
   }
 
   async findMenuById(id: string): Promise<Menu> {
-    return await this.prisma.menu.findUnique({ where: { id } })
+    try {
+      const menu = await this.prisma.menu.findUnique({
+        where: { id },
+        include: { items: { orderBy: [{ name: 'asc' }] } },
+      })
+
+      let menuResponse: MenuResponseDto | null
+
+      if (menu) {
+        menuResponse = {
+          ...menu,
+          items: menu.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            menuId: item.menuId,
+            quantityPeople: item.quantityPeople,
+            imgUrl: item.imgUrl,
+          })),
+        }
+      }
+
+      return menuResponse
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 
   async createMenu(createMenu: CreateMenuDto): Promise<Menu> {
@@ -111,6 +140,25 @@ export class MenuPersistence implements MenuRepository {
           quantityPeople: item.quantityPeople,
           imgUrl: item.imgUrl,
         })),
+      }
+
+      return menuResponse
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
+  }
+
+  async deleteMenu(id: string): Promise<Menu> {
+    try {
+      const menu = await this.prisma.menu.delete({
+        where: { id },
+      })
+
+      const menuResponse: MenuResponseDto = {
+        ...menu,
       }
 
       return menuResponse
