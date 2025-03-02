@@ -21,6 +21,11 @@ export class MenuResolver {
     return await this.menuService.getMenusWithItems()
   }
 
+  @Query(() => Menu)
+  async menu(@Args('id') id: string) {
+    return await this.menuService.getMenuById(id)
+  }
+
   @Mutation(() => Menu)
   async createMenu(@Args('createMenuData') createMenuInput: CreateMenuInput) {
     const newMenu = await this.menuService.createMenu(createMenuInput)
