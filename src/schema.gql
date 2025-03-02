@@ -93,7 +93,7 @@ type Query {
 
 type Mutation {
   createMenu(createMenuData: CreateMenuInput!): Menu!
-  updateMenuName(updateMenuNameData: UpdateMenuNameInput!): Menu!
+  updateMenu(updateMenuData: UpdateMenuInput!): Menu!
   createItem(createItemData: CreateItemInput!): Item!
   updateItem(updateItemData: UpdateItemInput!): Item!
   deleteItem(id: String!): Item!
@@ -111,9 +111,10 @@ input CreateMenuInput {
   category: String!
 }
 
-input UpdateMenuNameInput {
+input UpdateMenuInput {
   id: String!
   name: String!
+  category: String!
 }
 
 input CreateItemInput {

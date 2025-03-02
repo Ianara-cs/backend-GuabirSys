@@ -4,7 +4,7 @@ import { Menu } from '../entities/menu.entity'
 import { CreateMenuInput } from '../inputs/create-menu.input'
 import { Item } from '../entities/item.entity'
 import { CreateItemInput } from '../inputs/create-item.input'
-import { UpdateMenuNameInput } from '../inputs/update-name-menu.input'
+import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
 
 @Resolver()
@@ -28,8 +28,8 @@ export class MenuResolver {
   }
 
   @Mutation(() => Menu)
-  async updateMenuName(
-    @Args('updateMenuNameData') updateMenuNameInput: UpdateMenuNameInput,
+  async updateMenu(
+    @Args('updateMenuData') updateMenuNameInput: UpdateMenuInput,
   ) {
     const menu = await this.menuService.updateMenuName(updateMenuNameInput)
     return menu

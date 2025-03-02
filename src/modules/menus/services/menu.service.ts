@@ -4,7 +4,7 @@ import { Menu } from '../entities/menu.entity'
 import { CreateMenuDto } from '../dtos/create-menu.dto'
 import { CreateItemInput } from '../inputs/create-item.input'
 import { Item } from '../entities/item.entity'
-import { UpdateMenuNameInput } from '../inputs/update-name-menu.input'
+import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
 
 @Injectable()
@@ -27,14 +27,18 @@ export class MenuService {
     return newMenu
   }
 
-  async updateMenuName({ id, name }: UpdateMenuNameInput): Promise<Menu> {
+  async updateMenuName({ id, name, category }: UpdateMenuInput): Promise<Menu> {
     const menu = await this.menuRepository.findMenuById(id)
 
     if (!menu) {
       throw new NotFoundException('menu not found!')
     }
 
-    const updatedMenu = await this.menuRepository.updateMenuName({ id, name })
+    const updatedMenu = await this.menuRepository.updateMenu({
+      id,
+      name,
+      category,
+    })
     return updatedMenu
   }
 
