@@ -9,6 +9,7 @@ import { UpdateMenuInput } from '../../inputs/update-menu.input'
 import { UpdateItemInput } from '../../inputs/update-item.input'
 import { Prisma } from '@prisma/client'
 import { MenuResponseDto } from '../../dtos/menu.response.dto'
+import { ItemResponseDto } from '../../dtos/item.response.dto'
 
 @Injectable()
 export class MenuPersistence implements MenuRepository {
@@ -208,5 +209,35 @@ export class MenuPersistence implements MenuRepository {
 
   async findItemById(id: string): Promise<Item> {
     return await this.prisma.item.findUnique({ where: { id } })
+  }
+
+  async findAllItems(): Promise<ItemResponseDto[]> {
+    try {
+      const items = await this.prisma.item.findMany({
+        include: { Menu: true },
+      })
+
+      const itemsResponse: ItemResponseDto[] = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        menuId: item.menuId,
+        quantityPeople: item.quantityPeople,
+        imgUrl: item.imgUrl,
+        menu: {
+          id: item.Menu.id,
+          name: item.Menu.name,
+          category: item.Menu.category,
+        },
+      }))
+
+      return itemsResponse
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 }

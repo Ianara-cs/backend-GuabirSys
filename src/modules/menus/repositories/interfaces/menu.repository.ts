@@ -1,4 +1,5 @@
 import { CreateMenuDto } from '../../dtos/create-menu.dto'
+import { ItemResponseDto } from '../../dtos/item.response.dto'
 import { Item } from '../../entities/item.entity'
 import { Menu } from '../../entities/menu.entity'
 import { CreateItemInput } from '../../inputs/create-item.input'
@@ -12,6 +13,7 @@ export interface MenuRepository {
   createMenu(createMenu: CreateMenuDto): Promise<Menu>
   updateMenu(updateMenuData: UpdateMenuInput): Promise<Menu>
   deleteMenu(id: string): Promise<Menu>
+  findAllItems(): Promise<ItemResponseDto[]>
   createItem(createItem: CreateItemInput): Promise<Item>
   deleteItem(id: string): Promise<Item>
   findItemById(id: string): Promise<Item>

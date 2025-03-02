@@ -11,6 +11,7 @@ import { CreateItemInput } from '../inputs/create-item.input'
 import { Item } from '../entities/item.entity'
 import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
+import { ItemResponseDto } from '../dtos/item.response.dto'
 
 @Injectable()
 export class MenuService {
@@ -92,6 +93,10 @@ export class MenuService {
     }
 
     return item
+  }
+
+  async getItems(): Promise<ItemResponseDto[]> {
+    return await this.menuRepository.findAllItems()
   }
 
   async updateItem({

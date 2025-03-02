@@ -6,6 +6,7 @@ import { Item } from '../entities/item.entity'
 import { CreateItemInput } from '../inputs/create-item.input'
 import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
+import { ItemOutput } from '../outputs/item.output'
 
 @Resolver()
 export class MenuResolver {
@@ -44,6 +45,11 @@ export class MenuResolver {
   async deleteMenu(@Args('id') id: string) {
     const menu = await this.menuService.deleteMenu(id)
     return menu
+  }
+
+  @Query(() => [ItemOutput])
+  async items() {
+    return await this.menuService.getItems()
   }
 
   @Query(() => Item)

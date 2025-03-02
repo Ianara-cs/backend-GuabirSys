@@ -27,6 +27,16 @@ enum Category {
   BAR
 }
 
+type ItemOutput {
+  id: String!
+  name: String!
+  description: String
+  price: Decimal!
+  quantityPeople: Float!
+  imgUrl: String
+  menu: Menu!
+}
+
 type Table {
   id: String!
   number: Int
@@ -85,6 +95,7 @@ type Query {
   menus: [Menu!]!
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
+  items: [ItemOutput!]!
   item(id: String!): Item!
   tables: [Table!]!
   order(id: String!): OrderOutput!
