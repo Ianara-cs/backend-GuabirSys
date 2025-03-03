@@ -20,7 +20,11 @@ model User {
   password String
   role     Role
   isActive Boolean @default(true) @map("is_active")
-  // note     Note?
+
+  username_created String?
+  username_updated String?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
