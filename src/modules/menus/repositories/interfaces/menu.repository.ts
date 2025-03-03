@@ -16,6 +16,6 @@ export interface MenuRepository {
   findAllItems(): Promise<ItemResponseDto[]>
   createItem(createItem: CreateItemInput): Promise<Item>
   deleteItem(id: string): Promise<Item>
-  findItemById(id: string): Promise<Item>
+  findItemById(id: string): Promise<ItemResponseDto>
   updateItem(updateItemData: UpdateItemInput): Promise<Item>
 }

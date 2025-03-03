@@ -1,6 +1,6 @@
-import { Field, InputType } from '@nestjs/graphql'
+import { Field, InputType, Int } from '@nestjs/graphql'
 import { Transform, Type } from 'class-transformer'
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal'
 import { Decimal } from '@prisma/client/runtime/library'
 
@@ -20,4 +20,13 @@ export class UpdateItemInput {
   @Type(() => Object)
   @Transform(transformToDecimal)
   price?: Decimal
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  menuId: string
+
+  @Field(() => Int, { nullable: true })
+  @IsNumber()
+  quantityPeople?: number
 }

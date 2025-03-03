@@ -75,7 +75,7 @@ export class MenuService {
     return newItem
   }
 
-  async getItemById(id: string): Promise<Item> {
+  async getItemById(id: string): Promise<ItemResponseDto> {
     const item = await this.menuRepository.findItemById(id)
 
     if (!item) {
@@ -94,8 +94,11 @@ export class MenuService {
     description,
     name,
     price,
+    quantityPeople,
+    menuId,
   }: UpdateItemInput): Promise<Item> {
     const item = await this.getItemById(id)
+    await this.getMenuById(menuId)
 
     if (!name) {
       name = item.name
@@ -109,11 +112,17 @@ export class MenuService {
       price = item.price
     }
 
+    if (!quantityPeople) {
+      quantityPeople = item.quantityPeople
+    }
+
     const updatedItem = await this.menuRepository.updateItem({
       id,
       description,
       name,
       price,
+      quantityPeople,
+      menuId,
     })
     return updatedItem
   }

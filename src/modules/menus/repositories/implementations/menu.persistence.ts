@@ -208,16 +208,49 @@ export class MenuPersistence implements MenuRepository {
     description,
     name,
     price,
+    quantityPeople,
+    menuId,
   }: UpdateItemInput): Promise<Item> {
-    const item = await this.prisma.item.update({
-      where: { id },
-      data: { description, name, price },
-    })
-    return item
+    try {
+      const item = await this.prisma.item.update({
+        where: { id },
+        data: { description, name, price, quantityPeople, menuId },
+      })
+
+      return item
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 
-  async findItemById(id: string): Promise<Item> {
-    return await this.prisma.item.findUnique({ where: { id } })
+  async findItemById(id: string): Promise<ItemResponseDto> {
+    try {
+      const item = await this.prisma.item.findUnique({
+        where: { id },
+        include: { Menu: true },
+      })
+
+      let itemsResponse: ItemResponseDto | null
+
+      if (item) {
+        itemsResponse = {
+          ...item,
+          menu: {
+            ...item.Menu,
+          },
+        }
+      }
+
+      return itemsResponse
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 
   async findAllItems(): Promise<ItemResponseDto[]> {

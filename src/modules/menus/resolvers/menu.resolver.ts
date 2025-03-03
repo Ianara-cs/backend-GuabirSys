@@ -52,7 +52,7 @@ export class MenuResolver {
     return await this.menuService.getItems()
   }
 
-  @Query(() => Item)
+  @Query(() => ItemOutput)
   async item(@Args('id') id: string) {
     return await this.menuService.getItemById(id)
   }
