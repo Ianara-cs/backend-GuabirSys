@@ -3,6 +3,7 @@ import { CreateUserDto } from '../../dtos/create-user.dto'
 import { User } from '../../entities/user.entity'
 import { UsersRepository } from '../interfaces/users.repository'
 import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class UsersPersistence implements UsersRepository {
@@ -14,10 +15,32 @@ export class UsersPersistence implements UsersRepository {
     role,
     username,
   }: CreateUserDto): Promise<User> {
-    const newUser = await this.prisma.user.create({
-      data: { name, password, role, username },
-    })
+    try {
+      const newUser = await this.prisma.user.create({
+        data: { name, password, role, username },
+      })
 
-    return newUser
+      return newUser
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
+  }
+
+  async findUserByUsername(username: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { username },
+      })
+
+      return user
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 }

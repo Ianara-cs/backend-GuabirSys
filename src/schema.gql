@@ -90,6 +90,25 @@ type NoteItemsOutputs {
   items: [ItemsOnOrders!]
 }
 
+type User {
+  id: String!
+  name: String!
+  username: String!
+  password: String!
+  role: Role!
+  isActive: Boolean!
+  username_created: String
+  username_updated: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum Role {
+  MANAGER
+  CHEF
+  ATTENDANT
+}
+
 type Query {
   sayHello: String!
   menus: [Menu!]!
@@ -117,6 +136,7 @@ type Mutation {
   addItemInNote(addItemNoteData: AddItemNoteInput!): Boolean!
   removeItemInNote(idItemOrder: String!): Boolean!
   createNote: Note!
+  signUp(signupData: SignupInput!): User!
 }
 
 input CreateMenuInput {
@@ -172,6 +192,13 @@ input AddItemNoteInput {
   noteId: String!
   quantity: Float!
   itemId: String!
+}
+
+input SignupInput {
+  name: String!
+  username: String!
+  password: String!
+  role: String!
 }
 
 type Subscription {

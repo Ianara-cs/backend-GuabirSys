@@ -8,6 +8,7 @@ import { join } from 'path'
 import { FootResolver } from './foot.resolver'
 import { CustomerServiceModule } from './modules/customer-service/customer-service.module'
 import { NotesModule } from './modules/notes/notes.module'
+import { AuthModule } from './modules/auth/auth.module'
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { NotesModule } from './modules/notes/notes.module'
     MenusModule,
     CustomerServiceModule,
     NotesModule,
+    AuthModule,
   ],
   providers: [FootResolver],
 })
