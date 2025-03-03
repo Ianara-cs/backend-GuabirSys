@@ -90,23 +90,30 @@ type NoteItemsOutputs {
   items: [ItemsOnOrders!]
 }
 
-type User {
+type SigninOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type SignupUserDTO {
   id: String!
   name: String!
   username: String!
-  password: String!
   role: Role!
   isActive: Boolean!
-  username_created: String
-  username_updated: String
   createdAt: DateTime
-  updatedAt: DateTime
 }
 
 enum Role {
   MANAGER
   CHEF
   ATTENDANT
+}
+
+type SignupOutput {
+  user: SignupUserDTO!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
@@ -136,7 +143,8 @@ type Mutation {
   addItemInNote(addItemNoteData: AddItemNoteInput!): Boolean!
   removeItemInNote(idItemOrder: String!): Boolean!
   createNote: Note!
-  signUp(signupData: SignupInput!): User!
+  signUp(signupData: SignupInput!): SignupOutput!
+  signIn(signinData: SigninInput!): SigninOutput!
 }
 
 input CreateMenuInput {
@@ -199,6 +207,11 @@ input SignupInput {
   username: String!
   password: String!
   role: String!
+}
+
+input SigninInput {
+  username: String!
+  password: String!
 }
 
 type Subscription {

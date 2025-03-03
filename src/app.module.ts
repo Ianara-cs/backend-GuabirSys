@@ -9,9 +9,17 @@ import { FootResolver } from './foot.resolver'
 import { CustomerServiceModule } from './modules/customer-service/customer-service.module'
 import { NotesModule } from './modules/notes/notes.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { ConfigModule } from '@nestjs/config'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' },
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
