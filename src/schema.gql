@@ -96,7 +96,7 @@ type Query {
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
   items: [ItemOutput!]!
-  item(id: String!): Item!
+  item(id: String!): ItemOutput!
   tables: [Table!]!
   order(id: String!): OrderOutput!
   note(id: String!): NoteItemsOutputs!
@@ -143,6 +143,8 @@ input UpdateItemInput {
   name: String
   description: String
   price: Decimal
+  menuId: String!
+  quantityPeople: Int
 }
 
 input CreateTableInput {
