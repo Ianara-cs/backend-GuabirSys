@@ -1,6 +1,7 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Decimal } from '@prisma/client/runtime/library'
 import { Transform, Type } from 'class-transformer'
+import { IsNumber } from 'class-validator'
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal'
 
 @ObjectType()
@@ -22,7 +23,8 @@ export class Item {
   @Field()
   menuId: string
 
-  @Field()
+  @Field(() => Int, { nullable: true })
+  @IsNumber()
   quantityPeople: number
 
   @Field({ nullable: true })

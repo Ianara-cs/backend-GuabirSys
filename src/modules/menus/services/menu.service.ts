@@ -69,18 +69,8 @@ export class MenuService {
     return deletedMenu
   }
 
-  async createItem({
-    name,
-    price,
-    description,
-    menuId,
-  }: CreateItemInput): Promise<Item> {
-    const newItem = await this.menuRepository.createItem({
-      name,
-      price,
-      description,
-      menuId,
-    })
+  async createItem(createItemData: CreateItemInput): Promise<Item> {
+    const newItem = await this.menuRepository.createItem(createItemData)
 
     return newItem
   }

@@ -176,17 +176,26 @@ export class MenuPersistence implements MenuRepository {
     menuId,
     name,
     price,
+    quantityPeople,
   }: CreateItemInput): Promise<Item> {
-    const i = await this.prisma.item.create({
-      data: {
-        name,
-        price,
-        description,
-        menuId,
-      },
-    })
+    try {
+      const item = await this.prisma.item.create({
+        data: {
+          name,
+          quantityPeople,
+          price,
+          description,
+          menuId,
+        },
+      })
 
-    return i
+      return item
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
   }
 
   async deleteItem(id: string): Promise<Item> {
