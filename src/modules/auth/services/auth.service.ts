@@ -13,12 +13,17 @@ import { SigninInput } from '../inputs/signin.input'
 import { SigninOutput } from '../outputs/signin.output'
 import { Payload } from '../types/payloadType'
 import { SignupOutput } from '../outputs/signup.output'
+import { RefreshTokenRepository } from '../repositories/interfaces/refresh-toke.repository'
+import { convertToMilliseconds } from 'src/global/utils/functions/convertToMilliseconds'
+import { GenerateTokenDto } from '../dtos/generate-token.dto'
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(REPOSITORY.USER)
     private usersRepository: UsersRepository,
+    @Inject(REPOSITORY.REFRESH_TOKEN)
+    private refreshTokenRepository: RefreshTokenRepository,
     private jwtService: JwtService,
   ) {}
 
@@ -45,15 +50,21 @@ export class AuthService {
 
     const payload = { sub: newUser.id, username: newUser.username }
 
-    const accessToken = this.generateToken(
+    const { token: accessToken } = this.generateToken(
       payload,
       process.env.ACCESS_EXPIRES_IN,
     )
 
-    const refreshToken = this.generateToken(
+    const { token: refreshToken, expiresAt } = this.generateToken(
       payload,
       process.env.REFRESH_EXPIRES_IN,
     )
+
+    await this.refreshTokenRepository.createRefreshToken({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt,
+    })
 
     return {
       user: newUser,
@@ -77,15 +88,21 @@ export class AuthService {
 
     const payload = { sub: user.id, username: user.username }
 
-    const accessToken = this.generateToken(
+    const { token: accessToken } = this.generateToken(
       payload,
       process.env.ACCESS_EXPIRES_IN,
     )
 
-    const refreshToken = this.generateToken(
+    const { token: refreshToken, expiresAt } = this.generateToken(
       payload,
       process.env.REFRESH_EXPIRES_IN,
     )
+
+    await this.refreshTokenRepository.createRefreshToken({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt,
+    })
 
     return {
       accessToken,
@@ -93,12 +110,17 @@ export class AuthService {
     }
   }
 
-  generateToken(payload: Payload, expiresIn: string): string {
+  generateToken(payload: Payload, expiresIn: string): GenerateTokenDto {
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
       expiresIn,
     })
 
-    return token
+    const expiresAt = new Date(Date.now() + convertToMilliseconds(expiresIn))
+
+    return {
+      token,
+      expiresAt,
+    }
   }
 }
