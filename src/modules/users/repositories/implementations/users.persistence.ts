@@ -43,4 +43,19 @@ export class UsersPersistence implements UsersRepository {
       throw error
     }
   }
+
+  async findUserByUserId(id: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      })
+
+      return user
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
+  }
 }
