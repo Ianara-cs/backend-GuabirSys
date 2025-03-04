@@ -120,6 +120,15 @@ type RefreshTokenOutput {
   accessToken: String!
 }
 
+type UserResultDto {
+  id: String!
+  name: String!
+  username: String!
+  role: Role!
+  isActive: Boolean!
+  createdAt: DateTime
+}
+
 type Query {
   sayHello: String!
   menus: [Menu!]!
@@ -131,6 +140,7 @@ type Query {
   order(id: String!): OrderOutput!
   note(id: String!): NoteItemsOutputs!
   allNotes: [Note!]!
+  whoAmI: UserResultDto!
 }
 
 type Mutation {
