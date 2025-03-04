@@ -160,6 +160,7 @@ type Mutation {
   signUp(signupData: SignupInput!): SignupOutput!
   signIn(signinData: SigninInput!): SigninOutput!
   refreshToken(refreshTokenData: String!): RefreshTokenOutput!
+  logout(refreshTokenData: String!): Boolean!
 }
 
 input CreateMenuInput {

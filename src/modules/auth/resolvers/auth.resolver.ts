@@ -39,6 +39,18 @@ export class AuthResolver {
     }
   }
 
+  @Mutation(() => Boolean)
+  async logout(
+    @CurrentUser() user: User,
+    @Args('refreshTokenData') refreshToken: string,
+  ) {
+    const isDeleted = await this.authService.deleteRefreshToken(
+      user.id,
+      refreshToken,
+    )
+    return isDeleted
+  }
+
   @Query(() => UserResultDto)
   async whoAmI(@CurrentUser() user: User): Promise<UserResultDto> {
     const result = await this.usersService.getUserById(user.id)

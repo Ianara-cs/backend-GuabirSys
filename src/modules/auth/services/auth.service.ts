@@ -146,6 +146,23 @@ export class AuthService {
     }
   }
 
+  async deleteRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<boolean> {
+    const token = await this.refreshTokenRepository.findRefreshToken(
+      refreshToken,
+      userId,
+    )
+
+    if (!token) {
+      throw new BadRequestException('Error logging out!')
+    }
+
+    await this.refreshTokenRepository.deleteRefreshToken(token.id)
+    return true
+  }
+
   generateToken(payload: Payload, expiresIn: string): GenerateTokenDto {
     const token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
