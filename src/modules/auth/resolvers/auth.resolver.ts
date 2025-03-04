@@ -5,9 +5,7 @@ import { SigninInput } from '../inputs/signin.input'
 import { SigninOutput } from '../outputs/signin.output'
 import { SignupOutput } from '../outputs/signup.output'
 import { RefreshTokenOutput } from '../outputs/refresh-token.output'
-import { UseGuards } from '@nestjs/common'
 import { User } from 'src/modules/users/entities/user.entity'
-import { GqlAuthGuard } from '../auth-guards/gql-auth.guard'
 import { CurrentUser } from '../decorators/current-user.decorator'
 import { UsersService } from 'src/modules/users/services/users.service'
 import { UserResultDto } from 'src/modules/users/dtos/user-result.dto'
@@ -42,7 +40,6 @@ export class AuthResolver {
   }
 
   @Query(() => UserResultDto)
-  @UseGuards(GqlAuthGuard)
   async whoAmI(@CurrentUser() user: User): Promise<UserResultDto> {
     const result = await this.usersService.getUserById(user.id)
     return result

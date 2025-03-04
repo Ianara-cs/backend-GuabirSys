@@ -7,7 +7,8 @@ import { RefreshTokenPersistence } from './repositories/implementations/refresh-
 import { PassportModule } from '@nestjs/passport'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { APP_GUARD } from '@nestjs/core'
-import { GqlAuthGuard } from './auth-guards/gql-auth.guard'
+import { GqlAuthGuard } from './guards/gql-auth.guard'
+import { RolesGuard } from './guards/roles.guard'
 
 @Module({
   imports: [PassportModule.register({ defaultStrategy: 'jwt' }), UsersModule],
@@ -22,6 +23,10 @@ import { GqlAuthGuard } from './auth-guards/gql-auth.guard'
     {
       provide: APP_GUARD,
       useClass: GqlAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   exports: [JwtStrategy, PassportModule],

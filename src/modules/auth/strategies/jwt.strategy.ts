@@ -21,8 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate({ username }: Payload): Promise<SignupUserDTO> {
     const user = await this.usersRepository.findUserByUsername(username)
 
-    console.log(user)
-
     if (!user) {
       throw new UnauthorizedException('User nor found!')
     }
