@@ -5,4 +5,5 @@ export interface RefreshTokenRepository {
   createRefreshToken(
     saveRefreshTokenData: SaveRefreshTokenDto,
   ): Promise<RefreshToken>
+  findRefreshToken(refreshToken: string, userId: string): Promise<RefreshToken>
 }

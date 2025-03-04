@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { REPOSITORY } from 'src/global/utils/constants/repository'
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto'
@@ -107,6 +108,40 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+    }
+  }
+
+  async refreshToken(refreshToken: string): Promise<string> {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_SECRET,
+        ignoreExpiration: true,
+      })
+
+      const token = await this.refreshTokenRepository.findRefreshToken(
+        refreshToken,
+        payload.sub,
+      )
+
+      if (!token) {
+        throw new UnauthorizedException()
+      }
+
+      if (token.expiresAt < new Date()) {
+        throw new UnauthorizedException('Refresh token expirado')
+      }
+
+      const { token: accessToken } = this.generateToken(
+        {
+          sub: payload.sub,
+          username: payload.username,
+        },
+        process.env.ACCESS_EXPIRES_IN,
+      )
+
+      return accessToken
+    } catch (error) {
+      throw new UnauthorizedException(`${error}`)
     }
   }
 

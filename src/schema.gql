@@ -116,6 +116,10 @@ type SignupOutput {
   refreshToken: String!
 }
 
+type RefreshTokenOutput {
+  accessToken: String!
+}
+
 type Query {
   sayHello: String!
   menus: [Menu!]!
@@ -145,6 +149,7 @@ type Mutation {
   createNote: Note!
   signUp(signupData: SignupInput!): SignupOutput!
   signIn(signinData: SigninInput!): SigninOutput!
+  refreshToken(refreshTokenData: String!): RefreshTokenOutput!
 }
 
 input CreateMenuInput {

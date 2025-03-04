@@ -25,4 +25,25 @@ export class RefreshTokenPersistence implements RefreshTokenRepository {
       throw error
     }
   }
+
+  async findRefreshToken(
+    refreshToken: string,
+    userId: string,
+  ): Promise<RefreshToken> {
+    try {
+      const token = await this.prisma.refreshToken.findMany({
+        where: {
+          userId,
+          token: refreshToken,
+        },
+      })
+
+      return token[0]
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
+  }
 }
