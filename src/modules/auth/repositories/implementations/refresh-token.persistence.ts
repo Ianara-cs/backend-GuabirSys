@@ -46,4 +46,21 @@ export class RefreshTokenPersistence implements RefreshTokenRepository {
       throw error
     }
   }
+
+  async deleteRefreshToken(id: string): Promise<RefreshToken> {
+    try {
+      const token = await this.prisma.refreshToken.delete({
+        where: {
+          id,
+        },
+      })
+
+      return token
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`Database error: ${error.message}`)
+      }
+      throw error
+    }
+  }
 }

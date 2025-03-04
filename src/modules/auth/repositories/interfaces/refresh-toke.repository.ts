@@ -6,4 +6,5 @@ export interface RefreshTokenRepository {
     saveRefreshTokenData: SaveRefreshTokenDto,
   ): Promise<RefreshToken>
   findRefreshToken(refreshToken: string, userId: string): Promise<RefreshToken>
+  deleteRefreshToken(id: string): Promise<RefreshToken>
 }

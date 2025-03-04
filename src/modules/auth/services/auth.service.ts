@@ -128,7 +128,8 @@ export class AuthService {
       }
 
       if (token.expiresAt < new Date()) {
-        throw new UnauthorizedException('Refresh token expirado')
+        await this.refreshTokenRepository.deleteRefreshToken(token.id)
+        throw new UnauthorizedException('Refresh token expired!')
       }
 
       const { token: accessToken } = this.generateToken(
