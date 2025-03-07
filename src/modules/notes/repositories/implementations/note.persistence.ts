@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { NoteRepository } from '../interfaces/note.repository'
 import { Note } from '../../entities/note.entity'
 import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
-import { Prisma } from '@prisma/client'
 import { NoteItemsResponseDto } from '../../dtos/note-items.response.dto'
 import { AddItemNoteDto } from '../../dtos/add-item-note.dto'
 
@@ -16,83 +15,48 @@ export class NotePersistence implements NoteRepository {
   }
 
   async findNote(noteId: string): Promise<Note> {
-    try {
-      return await this.prisma.note.findUnique({ where: { id: noteId } })
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
-    }
+    return await this.prisma.note.findUnique({ where: { id: noteId } })
   }
 
   async findAllNotes(): Promise<Note[]> {
-    try {
-      const allNotes = await this.prisma.note.findMany()
+    const allNotes = await this.prisma.note.findMany()
 
-      return allNotes
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
-    }
+    return allNotes
   }
 
   async findItemsNotes(noteId: string): Promise<NoteItemsResponseDto> {
-    try {
-      const note = await this.prisma.note.findUnique({
-        where: { id: noteId },
-        include: { items: true },
-      })
+    const note = await this.prisma.note.findUnique({
+      where: { id: noteId },
+      include: { items: true },
+    })
 
-      const noteResponse: NoteItemsResponseDto = {
-        id: note.id,
-        total: note.total,
-        items: note.items.map((item) => ({
-          id: item.id,
-          itemId: item.itemId,
-          quantity: item.quantity,
-        })),
-      }
-
-      return noteResponse
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
+    const noteResponse: NoteItemsResponseDto = {
+      id: note.id,
+      total: note.total,
+      items: note.items.map((item) => ({
+        id: item.id,
+        itemId: item.itemId,
+        quantity: item.quantity,
+      })),
     }
+
+    return noteResponse
   }
 
   async addItem({ itemId, noteId, quantity }: AddItemNoteDto): Promise<void> {
-    try {
-      await this.prisma.itemsOnOrders.create({
-        data: {
-          quantity,
-          itemId,
-          noteId,
-        },
-      })
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
-    }
+    await this.prisma.itemsOnOrders.create({
+      data: {
+        quantity,
+        itemId,
+        noteId,
+      },
+    })
   }
 
   async removeItem(itemId: string): Promise<void> {
-    try {
-      await this.prisma.itemsOnOrders.delete({
-        where: { id: itemId },
-      })
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
-    }
+    await this.prisma.itemsOnOrders.delete({
+      where: { id: itemId },
+    })
   }
 
   async quantityItemsOrder(): Promise<number> {
