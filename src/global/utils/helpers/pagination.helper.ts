@@ -1,10 +1,11 @@
 import { PaginatedResult } from 'src/global/types/paginated-result'
 
-interface IPaginate {
+interface PaginateArgs {
   prismaModel: any
   page: number
   take: number
-  include: object
+  include?: object
+  orderBy?: Array<object>
 }
 
 export async function paginate<T>({
@@ -12,7 +13,8 @@ export async function paginate<T>({
   page,
   include,
   take,
-}: IPaginate): Promise<PaginatedResult<T>> {
+  orderBy,
+}: PaginateArgs): Promise<PaginatedResult<T>> {
   const skip = (page - 1) * take
 
   const [data, total] = await Promise.all([
@@ -20,6 +22,7 @@ export async function paginate<T>({
       skip,
       take,
       include,
+      orderBy,
     }),
     prismaModel.count(),
   ])

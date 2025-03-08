@@ -22,12 +22,18 @@ export class MenuPersistence implements MenuRepository {
     paginationArgs,
   }: MenuFiltersDto): Promise<PaginatedResult<MenuResponseDto>> {
     const { page, take } = paginationArgs
-    const skip = (page - 1) * take
 
-    const menus = await this.prisma.menu.findMany({
-      skip,
+    const {
+      total,
+      hasNextPage,
+      result: menus,
+    } = await paginate<Menu>({
+      prismaModel: this.prisma.menu,
+      page,
       take,
-      include: { items: { orderBy: [{ name: 'asc' }] } },
+      include: {
+        items: { orderBy: [{ name: 'asc' }] },
+      },
       orderBy: [{ category: 'desc' }, { name: 'asc' }],
     })
 
@@ -45,9 +51,6 @@ export class MenuPersistence implements MenuRepository {
         imgUrl: item.imgUrl,
       })),
     }))
-
-    const total = await this.prisma.menu.count()
-    const hasNextPage = skip + take < total
 
     return { result: menuResponse, total, hasNextPage }
   }
