@@ -3,6 +3,7 @@ import { Decimal } from '@prisma/client/runtime/library'
 import { Transform, Type } from 'class-transformer'
 import { IsNumber } from 'class-validator'
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal'
+import { Menu } from './menu.entity'
 
 @ObjectType()
 export class Item {
@@ -22,6 +23,9 @@ export class Item {
 
   @Field()
   menuId: string
+
+  @Field(() => Menu, { nullable: true })
+  Menu?: Menu
 
   @Field(() => Int, { nullable: true })
   @IsNumber()

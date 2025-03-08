@@ -9,6 +9,7 @@ import { UpdateItemInput } from '../inputs/update-item.input'
 import { ItemOutput } from '../outputs/item.output'
 import { PaginatedMenus } from '../outputs/paginated-menus.output'
 import { PaginationArgs } from 'src/global/types/graphql/pagination-args'
+import { PaginatedItems } from '../outputs/paginated-items.output'
 
 @Resolver()
 export class MenuResolver {
@@ -49,9 +50,9 @@ export class MenuResolver {
     return menu
   }
 
-  @Query(() => [ItemOutput])
-  async items() {
-    return await this.menuService.getItems()
+  @Query(() => PaginatedItems)
+  async items(@Args() paginationArgs: PaginationArgs) {
+    return await this.menuService.getItems(paginationArgs)
   }
 
   @Query(() => ItemOutput)

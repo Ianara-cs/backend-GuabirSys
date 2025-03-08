@@ -8,6 +8,7 @@ type Item {
   description: String
   price: Decimal!
   menuId: String!
+  Menu: Menu
   quantityPeople: Int
   imgUrl: String
 }
@@ -131,10 +132,10 @@ type UserResultDto {
 
 type Query {
   sayHello: String!
-  menus(take: Int! = 15, page: Int! = 1): PaginatedType!
+  menus(take: Int = 15, page: Int = 1): PaginatedMenu!
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
-  items: [ItemOutput!]!
+  items(take: Int = 15, page: Int = 1): PaginatedItemOutput!
   item(id: String!): ItemOutput!
   tables: [Table!]!
   order(id: String!): OrderOutput!
@@ -143,8 +144,14 @@ type Query {
   whoAmI: UserResultDto!
 }
 
-type PaginatedType {
+type PaginatedMenu {
   result: [Menu!]!
+  total: Int!
+  hasNextPage: Boolean!
+}
+
+type PaginatedItemOutput {
+  result: [ItemOutput!]!
   total: Int!
   hasNextPage: Boolean!
 }

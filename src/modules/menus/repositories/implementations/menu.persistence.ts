@@ -11,6 +11,8 @@ import { MenuResponseDto } from '../../dtos/menu.response.dto'
 import { ItemResponseDto } from '../../dtos/item.response.dto'
 import { PaginatedResult } from 'src/global/types/paginated-result'
 import { MenuFiltersDto } from '../../dtos/menu-filters.dto'
+import { ItemFiltersDto } from '../../dtos/item-filters.dto'
+import { paginate } from 'src/global/utils/helpers/pagination.helper'
 
 @Injectable()
 export class MenuPersistence implements MenuRepository {
@@ -208,9 +210,22 @@ export class MenuPersistence implements MenuRepository {
     return itemsResponse
   }
 
-  async findAllItems(): Promise<ItemResponseDto[]> {
-    const items = await this.prisma.item.findMany({
-      include: { Menu: true },
+  async findAllItems({
+    paginationArgs,
+  }: ItemFiltersDto): Promise<PaginatedResult<ItemResponseDto>> {
+    const { page, take } = paginationArgs
+
+    const {
+      total,
+      hasNextPage,
+      result: items,
+    } = await paginate<Item>({
+      prismaModel: this.prisma.item,
+      page,
+      take,
+      include: {
+        Menu: true,
+      },
     })
 
     const itemsResponse: ItemResponseDto[] = items.map((item) => ({
@@ -228,6 +243,6 @@ export class MenuPersistence implements MenuRepository {
       },
     }))
 
-    return itemsResponse
+    return { result: itemsResponse, total, hasNextPage }
   }
 }

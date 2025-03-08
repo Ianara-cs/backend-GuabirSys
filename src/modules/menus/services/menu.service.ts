@@ -90,8 +90,10 @@ export class MenuService {
     return item
   }
 
-  async getItems(): Promise<ItemResponseDto[]> {
-    return await this.menuRepository.findAllItems()
+  async getItems(
+    paginationArgs: PaginationArgs,
+  ): Promise<PaginatedResult<ItemResponseDto>> {
+    return await this.menuRepository.findAllItems({ paginationArgs })
   }
 
   async updateItem({

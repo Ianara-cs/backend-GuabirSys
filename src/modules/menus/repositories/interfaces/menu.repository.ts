@@ -8,6 +8,7 @@ import { UpdateItemInput } from '../../inputs/update-item.input'
 import { UpdateMenuInput } from '../../inputs/update-menu.input'
 import { MenuResponseDto } from '../../dtos/menu.response.dto'
 import { MenuFiltersDto } from '../../dtos/menu-filters.dto'
+import { ItemFiltersDto } from '../../dtos/item-filters.dto'
 
 export interface MenuRepository {
   findAllMenus(
@@ -18,7 +19,9 @@ export interface MenuRepository {
   createMenu(createMenu: CreateMenuDto): Promise<Menu>
   updateMenu(updateMenuData: UpdateMenuInput): Promise<Menu>
   deleteMenu(id: string): Promise<Menu>
-  findAllItems(): Promise<ItemResponseDto[]>
+  findAllItems(
+    filters: ItemFiltersDto,
+  ): Promise<PaginatedResult<ItemResponseDto>>
   createItem(createItem: CreateItemInput): Promise<Item>
   deleteItem(id: string): Promise<Item>
   findItemById(id: string): Promise<ItemResponseDto>
