@@ -12,6 +12,9 @@ import { Item } from '../entities/item.entity'
 import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
 import { ItemResponseDto } from '../dtos/item.response.dto'
+import { PaginatedResult } from 'src/global/types/paginated-result'
+import { MenuResponseDto } from '../dtos/menu.response.dto'
+import { PaginationArgs } from 'src/global/types/graphql/pagination-args'
 
 @Injectable()
 export class MenuService {
@@ -20,8 +23,10 @@ export class MenuService {
     private menuRepository: MenuRepository,
   ) {}
 
-  async getMenus(): Promise<Menu[]> {
-    return await this.menuRepository.findAllMenus()
+  async getMenus(
+    paginationArgs: PaginationArgs,
+  ): Promise<PaginatedResult<MenuResponseDto>> {
+    return await this.menuRepository.findAllMenus({ paginationArgs })
   }
 
   async getMenusWithItems(): Promise<Menu[]> {

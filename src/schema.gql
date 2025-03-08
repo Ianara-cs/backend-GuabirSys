@@ -131,7 +131,7 @@ type UserResultDto {
 
 type Query {
   sayHello: String!
-  menus: [Menu!]!
+  menus(take: Int! = 15, page: Int! = 1): PaginatedType!
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
   items: [ItemOutput!]!
@@ -141,6 +141,12 @@ type Query {
   note(id: String!): NoteItemsOutputs!
   allNotes: [Note!]!
   whoAmI: UserResultDto!
+}
+
+type PaginatedType {
+  result: [Menu!]!
+  total: Int!
+  hasNextPage: Boolean!
 }
 
 type Mutation {

@@ -9,13 +9,22 @@ import { UpdateMenuInput } from '../../inputs/update-menu.input'
 import { UpdateItemInput } from '../../inputs/update-item.input'
 import { MenuResponseDto } from '../../dtos/menu.response.dto'
 import { ItemResponseDto } from '../../dtos/item.response.dto'
+import { PaginatedResult } from 'src/global/types/paginated-result'
+import { MenuFiltersDto } from '../../dtos/menu-filters.dto'
 
 @Injectable()
 export class MenuPersistence implements MenuRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findAllMenus(): Promise<MenuResponseDto[]> {
+  async findAllMenus({
+    paginationArgs,
+  }: MenuFiltersDto): Promise<PaginatedResult<MenuResponseDto>> {
+    const { page, take } = paginationArgs
+    const skip = (page - 1) * take
+
     const menus = await this.prisma.menu.findMany({
+      skip,
+      take,
       include: { items: { orderBy: [{ name: 'asc' }] } },
       orderBy: [{ category: 'desc' }, { name: 'asc' }],
     })
@@ -35,7 +44,10 @@ export class MenuPersistence implements MenuRepository {
       })),
     }))
 
-    return menuResponse
+    const total = await this.prisma.menu.count()
+    const hasNextPage = skip + take < total
+
+    return { result: menuResponse, total, hasNextPage }
   }
 
   async findAllMenusWithItems(): Promise<MenuResponseDto[]> {

@@ -7,14 +7,16 @@ import { CreateItemInput } from '../inputs/create-item.input'
 import { UpdateMenuInput } from '../inputs/update-menu.input'
 import { UpdateItemInput } from '../inputs/update-item.input'
 import { ItemOutput } from '../outputs/item.output'
+import { PaginatedMenus } from '../outputs/paginated-menus.output'
+import { PaginationArgs } from 'src/global/types/graphql/pagination-args'
 
 @Resolver()
 export class MenuResolver {
   constructor(private menuService: MenuService) {}
 
-  @Query(() => [Menu])
-  async menus() {
-    return await this.menuService.getMenus()
+  @Query(() => PaginatedMenus)
+  async menus(@Args() paginationArgs: PaginationArgs) {
+    return await this.menuService.getMenus(paginationArgs)
   }
 
   @Query(() => [Menu])
