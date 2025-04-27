@@ -132,10 +132,10 @@ type UserResultDto {
 
 type Query {
   sayHello: String!
-  menus(take: Int = 15, page: Int = 1): PaginatedMenu!
+  menus(isPaginated: Boolean = false, take: Int = 15, page: Int = 1): PaginatedMenu!
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
-  items(take: Int = 15, page: Int = 1): PaginatedItemOutput!
+  items(isPaginated: Boolean = false, take: Int = 15, page: Int = 1): PaginatedItemOutput!
   item(id: String!): ItemOutput!
   tables: [Table!]!
   order(id: String!): OrderOutput!

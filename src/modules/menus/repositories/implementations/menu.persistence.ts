@@ -21,7 +21,7 @@ export class MenuPersistence implements MenuRepository {
   async findAllMenus({
     paginationArgs,
   }: MenuFiltersDto): Promise<PaginatedResult<MenuResponseDto>> {
-    const { page, take } = paginationArgs
+    const { page, take, isPaginated } = paginationArgs
 
     const {
       total,
@@ -29,6 +29,7 @@ export class MenuPersistence implements MenuRepository {
       result: menus,
     } = await paginate<Menu>({
       prismaModel: this.prisma.menu,
+      isPaginated,
       page,
       take,
       include: {
@@ -216,7 +217,7 @@ export class MenuPersistence implements MenuRepository {
   async findAllItems({
     paginationArgs,
   }: ItemFiltersDto): Promise<PaginatedResult<ItemResponseDto>> {
-    const { page, take } = paginationArgs
+    const { page, take, isPaginated } = paginationArgs
 
     const {
       total,
@@ -224,6 +225,7 @@ export class MenuPersistence implements MenuRepository {
       result: items,
     } = await paginate<Item>({
       prismaModel: this.prisma.item,
+      isPaginated,
       page,
       take,
       include: {
