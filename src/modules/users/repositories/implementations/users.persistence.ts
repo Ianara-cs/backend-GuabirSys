@@ -13,9 +13,10 @@ export class UsersPersistence implements UsersRepository {
     password,
     role,
     username,
+    username_created,
   }: CreateUserDto): Promise<User> {
     const newUser = await this.prisma.user.create({
-      data: { name, password, role, username },
+      data: { name, password, role, username, username_created },
     })
 
     return newUser
