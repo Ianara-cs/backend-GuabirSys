@@ -25,6 +25,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type UserResultDto {
+  id: String!
+  name: String!
+  username: String!
+  role: Role!
+  isActive: Boolean!
+  createdAt: DateTime
+}
+
 type Item {
   id: String!
   name: String!
@@ -133,17 +142,9 @@ type RefreshTokenOutput {
   accessToken: String!
 }
 
-type UserResultDto {
-  id: String!
-  name: String!
-  username: String!
-  role: Role!
-  isActive: Boolean!
-  createdAt: DateTime
-}
-
 type Query {
   sayHello: String!
+  users: [UserResultDto!]!
   menus(isPaginated: Boolean = false, take: Int = 15, page: Int = 1): PaginatedMenu!
   menusWithItems: [Menu!]!
   menu(id: String!): Menu!
@@ -170,6 +171,8 @@ type PaginatedItemOutput {
 
 type Mutation {
   createUser(createUserData: CreateUserInput!): CreateUserOutput!
+  updateUser(updateUserData: UpdateUserInput!): UserResultDto!
+  deleteUser(id: String!): UserResultDto!
   createMenu(createMenuData: CreateMenuInput!): Menu!
   updateMenu(updateMenuData: UpdateMenuInput!): Menu!
   deleteMenu(id: String!): Menu!
@@ -194,6 +197,14 @@ input CreateUserInput {
   username: String!
   password: String!
   role: String!
+}
+
+input UpdateUserInput {
+  id: String!
+  name: String
+  username: String
+  password: String
+  role: String
 }
 
 input CreateMenuInput {
