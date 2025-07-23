@@ -173,6 +173,7 @@ type Mutation {
   createUser(createUserData: CreateUserInput!): CreateUserOutput!
   updateUser(updateUserData: UpdateUserInput!): UserResultDto!
   deleteUser(id: String!): UserResultDto!
+  disableUser(disableUserData: DisableUserInput!): UserResultDto!
   createMenu(createMenuData: CreateMenuInput!): Menu!
   updateMenu(updateMenuData: UpdateMenuInput!): Menu!
   deleteMenu(id: String!): Menu!
@@ -205,6 +206,11 @@ input UpdateUserInput {
   username: String
   password: String
   role: String
+}
+
+input DisableUserInput {
+  id: String!
+  active: Boolean!
 }
 
 input CreateMenuInput {
