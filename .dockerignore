@@ -1,0 +1,10 @@
+node_modules
+dist
+Dockerfile
+.dockerignore
+.env
+.git
+test
+coverage
+*.log
+dados_postgres
