@@ -24,6 +24,7 @@ import { JwtModule } from '@nestjs/jwt'
       playground: true,
       introspection: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ req }),
       subscriptions: {
         'subscriptions-transport-ws': true,
         // {
