@@ -12,6 +12,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaGraphQLExceptionFilter())
   app.enableCors({
     origin: [
+      'https://gestor-front-delta.vercel.app',
       'https://gestor-front-git-main-ianara-cs-projects.vercel.app',
       'https://studio.apollographql.com',
     ],
