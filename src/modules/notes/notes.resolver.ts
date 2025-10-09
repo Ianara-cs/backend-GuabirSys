@@ -3,25 +3,22 @@ import { NoteService } from './services/note.service'
 import { Note } from './entities/note.entity'
 import { AddItemNoteInput } from './inputs/add-item.input'
 import { NoteItemsOutputs } from './outputs/note-items.input'
+import { CurrentUser } from '../auth/decorators/current-user.decorator'
+import { User } from '../users/entities/user.entity'
 
 @Resolver()
 export class NoteResolver {
   constructor(private noteService: NoteService) {}
 
   @Query(() => NoteItemsOutputs)
-  async note(@Args('id') id: string) {
-    return await this.noteService.getAllItemsNote(id)
+  async note(@CurrentUser() user: User) {
+    return await this.noteService.getAllItemsNote(user.id)
   }
 
   @Query(() => [Note])
   async allNotes() {
     return await this.noteService.getAllNotes()
   }
-
-  // @Query(() => NoteItemsResponseDto)
-  // async allItemsNotes(@Args('id') id: string) {
-  //   return await this.noteService.getAllItemsNote(id)
-  // }
 
   @Mutation(() => Boolean)
   async addItemInNote(
@@ -36,7 +33,7 @@ export class NoteResolver {
   }
 
   @Mutation(() => Note)
-  async createNote() {
-    return await this.noteService.createNote()
+  async createNote(@Args('user_id') id: string) {
+    return await this.noteService.createNote(id)
   }
 }

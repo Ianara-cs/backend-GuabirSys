@@ -4,10 +4,11 @@ import { AddItemNoteDto } from '../../dtos/add-item-note.dto'
 
 export interface NoteRepository {
   findAllNotes(): Promise<Note[]>
-  findItemsNotes(noteId: string): Promise<NoteItemsResponseDto>
+  findItemsNotes(userId: string): Promise<NoteItemsResponseDto>
+  findNoteByUserId(userId: string): Promise<Note>
   findNote(noteId: string): Promise<Note>
   addItem(addItemNote: AddItemNoteDto): Promise<void>
   removeItem(itemId: string): Promise<void>
-  createNote(): Promise<Note>
+  createNote(userId: string): Promise<Note>
   quantityItemsOrder(): Promise<number>
 }

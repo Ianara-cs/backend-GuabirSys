@@ -9,13 +9,17 @@ import { AddItemNoteDto } from '../../dtos/add-item-note.dto'
 export class NotePersistence implements NoteRepository {
   constructor(private prisma: PrismaService) {}
 
-  async createNote(): Promise<Note> {
-    const note = await this.prisma.note.create({ data: { total: 1 } })
+  async createNote(userId: string): Promise<Note> {
+    const note = await this.prisma.note.create({ data: { userId } })
     return note
   }
 
   async findNote(noteId: string): Promise<Note> {
     return await this.prisma.note.findUnique({ where: { id: noteId } })
+  }
+
+  async findNoteByUserId(userId: string): Promise<Note> {
+    return await this.prisma.note.findUnique({ where: { userId } })
   }
 
   async findAllNotes(): Promise<Note[]> {
@@ -24,15 +28,16 @@ export class NotePersistence implements NoteRepository {
     return allNotes
   }
 
-  async findItemsNotes(noteId: string): Promise<NoteItemsResponseDto> {
+  async findItemsNotes(userId: string): Promise<NoteItemsResponseDto> {
     const note = await this.prisma.note.findUnique({
-      where: { id: noteId },
+      where: { userId },
       include: { items: true },
     })
 
     const noteResponse: NoteItemsResponseDto = {
       id: note.id,
       total: note.total,
+      userId: note.userId,
       items: note.items.map((item) => ({
         id: item.id,
         itemId: item.itemId,

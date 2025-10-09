@@ -110,6 +110,7 @@ type Note {
   id: String!
   total: Decimal!
   items: [ItemsOnOrders!]!
+  userId: String!
 }
 
 type NoteItemsOutputs {
@@ -152,7 +153,7 @@ type Query {
   item(id: String!): ItemOutput!
   tables: [Table!]!
   order(id: String!): OrderOutput!
-  note(id: String!): NoteItemsOutputs!
+  note: NoteItemsOutputs!
   allNotes: [Note!]!
   whoAmI: UserResultDto!
 }
@@ -186,7 +187,7 @@ type Mutation {
   createOrder(createOrderData: CreateOrderInput!): Order!
   addItemInNote(addItemNoteData: AddItemNoteInput!): Boolean!
   removeItemInNote(idItemOrder: String!): Boolean!
-  createNote: Note!
+  createNote(user_id: String!): Note!
   signUp(signupData: SignupInput!): SignupOutput!
   signIn(signinData: SigninInput!): SigninOutput!
   refreshToken(refreshTokenData: String!): RefreshTokenOutput!

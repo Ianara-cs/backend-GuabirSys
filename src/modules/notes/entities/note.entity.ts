@@ -16,4 +16,7 @@ export class Note {
 
   @Field(() => [ItemsOnOrders])
   items?: ItemsOnOrders[]
+
+  @Field(() => String)
+  userId: string
 }

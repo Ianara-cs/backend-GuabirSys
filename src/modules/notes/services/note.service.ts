@@ -4,6 +4,7 @@ import { Note } from '@prisma/client'
 import { NoteItemsResponseDto } from '../dtos/note-items.response.dto'
 import { AddItemNoteDto } from '../dtos/add-item-note.dto'
 import { MenuService } from 'src/modules/menus/services/menu.service'
+import { UsersService } from 'src/modules/users/services/users.service'
 
 @Injectable()
 export class NoteService {
@@ -11,10 +12,12 @@ export class NoteService {
     @Inject('NoteRepository')
     private noteRepository: NoteRepository,
     private itemService: MenuService,
+    private usersService: UsersService,
   ) {}
 
-  async createNote(): Promise<Note> {
-    const note = await this.noteRepository.createNote()
+  async createNote(userId: string): Promise<Note> {
+    await this.usersService.getUserById(userId)
+    const note = await this.noteRepository.createNote(userId)
 
     return note
   }
@@ -22,7 +25,15 @@ export class NoteService {
   async getNote(noteId: string): Promise<Note> {
     const note = await this.noteRepository.findNote(noteId)
 
-    // const
+    if (!note) {
+      throw new NotFoundException('note not found!')
+    }
+
+    return note
+  }
+
+  async getNoteByUserId(userId: string): Promise<Note> {
+    const note = await this.noteRepository.findNote(userId)
 
     if (!note) {
       throw new NotFoundException('note not found!')
@@ -35,9 +46,9 @@ export class NoteService {
     return await this.noteRepository.findAllNotes()
   }
 
-  async getAllItemsNote(noteId: string): Promise<NoteItemsResponseDto> {
-    await this.getNote(noteId)
-    const note = await this.noteRepository.findItemsNotes(noteId)
+  async getAllItemsNote(userId: string): Promise<NoteItemsResponseDto> {
+    await this.getNoteByUserId(userId)
+    const note = await this.noteRepository.findItemsNotes(userId)
 
     return note
   }

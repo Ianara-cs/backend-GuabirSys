@@ -5,4 +5,5 @@ export class NoteItemsResponseDto {
   id: string
   total: Decimal
   items?: ItemsOnOrders[]
+  userId: string
 }

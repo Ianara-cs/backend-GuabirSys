@@ -27,6 +27,7 @@ model User {
   updatedAt        DateTime @updatedAt @map("updated_at")
 
   refreshToken RefreshToken[]
+  note         Note?
 
   @@map("users")
 }
@@ -107,11 +108,11 @@ model ItemsOnOrders {
 }
 
 model Note {
-  id    String          @id @default(uuid())
-  items ItemsOnOrders[]
-  total Decimal?        @db.Decimal(8, 2)
-  // user   User?           @relation(fields: [userId], references: [id])
-  // userId String? @unique
+  id     String          @id @default(uuid())
+  items  ItemsOnOrders[]
+  total  Decimal?        @default(0) @db.Decimal(8, 2)
+  user   User?           @relation(fields: [userId], references: [id])
+  userId String?         @unique @map("user_id")
 
   @@map("notes")
 }
