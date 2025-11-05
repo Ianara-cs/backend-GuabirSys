@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql'
 import { Decimal } from '@prisma/client/runtime/library'
 import { Transform, Type } from 'class-transformer'
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal'
-import { ItemsOnOrders } from 'src/modules/customer-service/entities/order.entity'
+import { ItemsOnOrdersOutputs } from './items-on-orders.outputs'
 
 @ObjectType()
 export class NoteItemsOutputs {
@@ -14,6 +14,6 @@ export class NoteItemsOutputs {
   @Transform(transformToDecimal)
   total: Decimal
 
-  @Field(() => [ItemsOnOrders], { nullable: true })
-  items?: ItemsOnOrders[]
+  @Field(() => [ItemsOnOrdersOutputs], { nullable: true })
+  items?: ItemsOnOrdersOutputs[]
 }

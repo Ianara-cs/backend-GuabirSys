@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
 @InputType()
-export class AddItemNoteInput {
+export class UpdateQuantityItemInput {
   @Field()
   @IsNotEmpty()
   @IsNumber()
@@ -11,5 +11,5 @@ export class AddItemNoteInput {
   @Field()
   @IsNotEmpty()
   @IsString()
-  itemId: string
+  itemOnOrderId: string
 }

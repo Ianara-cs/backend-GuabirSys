@@ -5,6 +5,7 @@ import { AddItemNoteInput } from './inputs/add-item.input'
 import { NoteItemsOutputs } from './outputs/note-items.input'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { User } from '../users/entities/user.entity'
+import { UpdateQuantityItemInput } from './inputs/update-quantity-item.input'
 
 @Resolver()
 export class NoteResolver {
@@ -22,9 +23,13 @@ export class NoteResolver {
 
   @Mutation(() => Boolean)
   async addItemInNote(
+    @CurrentUser() user: User,
     @Args('addItemNoteData') addItemNoteInput: AddItemNoteInput,
   ) {
-    return await this.noteService.addItemNote(addItemNoteInput)
+    return await this.noteService.addItemNote({
+      userId: user.id,
+      ...addItemNoteInput,
+    })
   }
 
   @Mutation(() => Boolean)
@@ -33,7 +38,15 @@ export class NoteResolver {
   }
 
   @Mutation(() => Note)
-  async createNote(@Args('user_id') id: string) {
-    return await this.noteService.createNote(id)
+  async createNote(@CurrentUser() user: User) {
+    return await this.noteService.createNote(user.id)
+  }
+
+  @Mutation(() => Boolean)
+  async updateQuantityItem(
+    @Args('updateQuantityItemData')
+    updateQuantityItemInput: UpdateQuantityItemInput,
+  ) {
+    return await this.noteService.updateQuantityItem(updateQuantityItemInput)
   }
 }

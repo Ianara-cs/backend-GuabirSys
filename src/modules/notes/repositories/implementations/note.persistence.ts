@@ -3,7 +3,12 @@ import { NoteRepository } from '../interfaces/note.repository'
 import { Note } from '../../entities/note.entity'
 import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
 import { NoteItemsResponseDto } from '../../dtos/note-items.response.dto'
-import { AddItemNoteDto } from '../../dtos/add-item-note.dto'
+import { CreateItemNoteDto } from '../../dtos/create-item-note.dto'
+import {
+  FindItemNoteDto,
+  QuantityItemsOrderDto,
+} from '../../dtos/note-params.dto'
+import { ItemsOnOrders } from 'src/modules/customer-service/entities/order.entity'
 
 @Injectable()
 export class NotePersistence implements NoteRepository {
@@ -14,12 +19,30 @@ export class NotePersistence implements NoteRepository {
     return note
   }
 
-  async findNote(noteId: string): Promise<Note> {
+  async findNoteById(noteId: string): Promise<Note> {
     return await this.prisma.note.findUnique({ where: { id: noteId } })
   }
 
+  async findItemNoteById(itemOnOrderId: string): Promise<ItemsOnOrders> {
+    return await this.prisma.itemsOnOrders.findUnique({
+      where: { id: itemOnOrderId },
+    })
+  }
+
+  async findItemNoteByItemIdAndNoteId({
+    itemId,
+    noteId,
+  }: FindItemNoteDto): Promise<ItemsOnOrders> {
+    return await this.prisma.itemsOnOrders.findFirst({
+      where: { itemId, noteId },
+    })
+  }
+
   async findNoteByUserId(userId: string): Promise<Note> {
-    return await this.prisma.note.findUnique({ where: { userId } })
+    return await this.prisma.note.findUnique({
+      where: { userId },
+      include: { items: true },
+    })
   }
 
   async findAllNotes(): Promise<Note[]> {
@@ -31,7 +54,7 @@ export class NotePersistence implements NoteRepository {
   async findItemsNotes(userId: string): Promise<NoteItemsResponseDto> {
     const note = await this.prisma.note.findUnique({
       where: { userId },
-      include: { items: true },
+      include: { items: { include: { item: true } } },
     })
 
     const noteResponse: NoteItemsResponseDto = {
@@ -42,19 +65,36 @@ export class NotePersistence implements NoteRepository {
         id: item.id,
         itemId: item.itemId,
         quantity: item.quantity,
+        name: item.item.name,
+        price: item.item.price,
+        imgUrl: item.item.imgUrl,
       })),
     }
 
     return noteResponse
   }
 
-  async addItem({ itemId, noteId, quantity }: AddItemNoteDto): Promise<void> {
+  async addItem({
+    itemId,
+    noteId,
+    quantity,
+  }: CreateItemNoteDto): Promise<void> {
     await this.prisma.itemsOnOrders.create({
       data: {
         quantity,
         itemId,
         noteId,
       },
+    })
+  }
+
+  async updateQuantityItem({
+    itemOnOrderId,
+    quantity,
+  }: QuantityItemsOrderDto): Promise<ItemsOnOrders> {
+    return await this.prisma.itemsOnOrders.update({
+      where: { id: itemOnOrderId },
+      data: { quantity },
     })
   }
 

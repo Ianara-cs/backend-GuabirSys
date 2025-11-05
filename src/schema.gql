@@ -113,10 +113,20 @@ type Note {
   userId: String!
 }
 
+type ItemsOnOrdersOutputs {
+  id: String!
+  orderId: String
+  itemId: String!
+  quantity: Int
+  name: String!
+  price: Decimal!
+  imgUrl: String
+}
+
 type NoteItemsOutputs {
   id: String!
   total: Decimal!
-  items: [ItemsOnOrders!]
+  items: [ItemsOnOrdersOutputs!]
 }
 
 type SigninOutput {
@@ -187,7 +197,8 @@ type Mutation {
   createOrder(createOrderData: CreateOrderInput!): Order!
   addItemInNote(addItemNoteData: AddItemNoteInput!): Boolean!
   removeItemInNote(idItemOrder: String!): Boolean!
-  createNote(user_id: String!): Note!
+  createNote: Note!
+  updateQuantityItem(updateQuantityItemData: UpdateQuantityItemInput!): Boolean!
   signUp(signupData: SignupInput!): SignupOutput!
   signIn(signinData: SigninInput!): SigninOutput!
   refreshToken(refreshTokenData: String!): RefreshTokenOutput!
@@ -264,9 +275,13 @@ input CreateOrder {
 }
 
 input AddItemNoteInput {
-  noteId: String!
   quantity: Float!
   itemId: String!
+}
+
+input UpdateQuantityItemInput {
+  quantity: Float!
+  itemOnOrderId: String!
 }
 
 input SignupInput {

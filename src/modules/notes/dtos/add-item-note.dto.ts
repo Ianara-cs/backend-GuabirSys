@@ -1,5 +1,5 @@
 export class AddItemNoteDto {
-  noteId: string
+  userId: string
   quantity: number
   itemId: string
 }
