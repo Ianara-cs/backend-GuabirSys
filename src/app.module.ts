@@ -11,6 +11,7 @@ import { NotesModule } from './modules/notes/notes.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
+import { AccountsPayableModule } from './modules/accounts-payable/accounts-payable.module'
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { JwtModule } from '@nestjs/jwt'
     CustomerServiceModule,
     NotesModule,
     AuthModule,
+    AccountsPayableModule,
   ],
   providers: [FootResolver],
 })

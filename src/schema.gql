@@ -2,10 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type CreateUserOutput {
+type User {
   id: String!
   name: String!
   username: String!
+  password: String!
   role: Role!
   isActive: Boolean!
   username_created: String
@@ -24,6 +25,18 @@ enum Role {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type CreateUserOutput {
+  id: String!
+  name: String!
+  username: String!
+  role: Role!
+  isActive: Boolean!
+  username_created: String
+  username_updated: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
 
 type UserResultDto {
   id: String!
@@ -153,6 +166,36 @@ type RefreshTokenOutput {
   accessToken: String!
 }
 
+type ExpenseCategoriesEntity {
+  id: String!
+  name: String!
+  description: String
+  createdAt: DateTime!
+}
+
+type VendorEntity {
+  id: String!
+  name: String!
+  telephone: String
+  createdAt: DateTime!
+}
+
+type AccountPayableResponseOutput {
+  id: String!
+  description: String!
+  totalValue: Decimal!
+  observation: String!
+  issueDate: DateTime!
+  dueDate: DateTime!
+  status: Status!
+}
+
+enum Status {
+  PENDING
+  PAID
+  LATE
+}
+
 type Query {
   sayHello: String!
   users: [UserResultDto!]!
@@ -166,6 +209,7 @@ type Query {
   note: NoteItemsOutputs!
   allNotes: [Note!]!
   whoAmI: UserResultDto!
+  accountsPayable: [AccountPayableResponseOutput!]!
 }
 
 type PaginatedMenu {
@@ -203,6 +247,7 @@ type Mutation {
   signIn(signinData: SigninInput!): SigninOutput!
   refreshToken(refreshTokenData: String!): RefreshTokenOutput!
   logout(refreshTokenData: String!): Boolean!
+  createAccountPayable(createAccountPayableData: CreateAccountsPayableInput!): AccountPayableResponseOutput!
 }
 
 input CreateUserInput {
@@ -294,6 +339,16 @@ input SignupInput {
 input SigninInput {
   username: String!
   password: String!
+}
+
+input CreateAccountsPayableInput {
+  description: String
+  totalValue: Decimal!
+  observation: String
+  issueDate: DateTime
+  dueDate: DateTime
+  status: String!
+  categoryId: String!
 }
 
 type Subscription {
