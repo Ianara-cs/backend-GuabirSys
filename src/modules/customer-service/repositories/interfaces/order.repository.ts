@@ -3,6 +3,8 @@ import { BatchPayloadDto } from '../../dtos/batch-payload.dto'
 import { Order } from '../../entities/order.entity'
 import { OrderOutput } from '../../outputs/order.output'
 import { LinkItemsToOrderDto } from '../../dtos/link-items-to-order.dto'
+import { Decimal } from '@prisma/client/runtime/library'
+import { UpdatePriceOrderDto } from '../../dtos/update-price-order.dto'
 
 export interface OrderRepository {
   create(prisma: Prisma.TransactionClient, tableId: string): Promise<Order>
@@ -10,5 +12,12 @@ export interface OrderRepository {
     LinkItemsToOrderDto: LinkItemsToOrderDto,
   ): Promise<BatchPayloadDto>
   findOrderById(id: string): Promise<OrderOutput>
-  updateOrderPrice(id: string, price: number): Promise<Order>
+  calculateTotal(
+    orderId: string,
+    connection?: Prisma.TransactionClient,
+  ): Promise<Decimal>
+  updateOrderPrice(
+    updatePriceOrderDto: UpdatePriceOrderDto,
+    connection?: Prisma.TransactionClient,
+  ): Promise<Order>
 }

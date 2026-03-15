@@ -7,6 +7,7 @@ import { Order } from '../../entities/order.entity'
 import { BatchPayloadDto } from '../../dtos/batch-payload.dto'
 import { LinkItemsToOrderDto } from '../../dtos/link-items-to-order.dto'
 import { Prisma } from '@prisma/client'
+import { UpdatePriceOrderDto } from '../../dtos/update-price-order.dto'
 
 @Injectable()
 export class OrderPersistence implements OrderRepository {
@@ -47,13 +48,31 @@ export class OrderPersistence implements OrderRepository {
     return order
   }
 
-  async updateOrderPrice(id: string, price: number): Promise<Order> {
-    const decimalPrice = new Decimal(price)
-    const order = await this.prisma.order.update({
-      where: { id },
-      data: { price: decimalPrice },
+  async calculateTotal(
+    orderId: string,
+    connection?: Prisma.TransactionClient,
+  ): Promise<Decimal> {
+    const prisma = connection ? connection : this.prisma
+    const items = await prisma.itemsOnOrders.findMany({
+      where: { orderId },
+      include: { item: true },
     })
 
-    return order
+    const result = items.reduce((acc, item) => {
+      return acc + item.quantity * Number(item.item.price)
+    }, 0)
+
+    return new Decimal(result)
+  }
+
+  async updateOrderPrice(
+    { orderId, total }: UpdatePriceOrderDto,
+    connection?: Prisma.TransactionClient,
+  ): Promise<Order> {
+    const prisma = connection ? connection : this.prisma
+    return prisma.order.update({
+      where: { id: orderId },
+      data: { price: total },
+    })
   }
 }

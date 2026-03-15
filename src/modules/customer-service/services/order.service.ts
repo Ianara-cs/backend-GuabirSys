@@ -41,6 +41,13 @@ export class OrderService {
         throw new BadRequestException('No items to create an order')
       }
 
+      const total = await this.orderRepository.calculateTotal(order.id, tx)
+
+      await this.orderRepository.updateOrderPrice(
+        { orderId: order.id, total },
+        tx,
+      )
+
       return order
     })
   }
@@ -55,19 +62,19 @@ export class OrderService {
     return order
   }
 
-  async updateOrderPrice(id: string): Promise<Order> {
-    const order = await this.getOrderById(id)
-    let price = 0
-    for (let i = 0; i < order.items.length; i++) {
-      const item = await this.itemService.getItemById(order.items[i].itemId)
+  // async updateOrderPrice(id: string): Promise<Order> {
+  //   const order = await this.getOrderById(id)
+  //   let price = 0
+  //   for (let i = 0; i < order.items.length; i++) {
+  //     const item = await this.itemService.getItemById(order.items[i].itemId)
 
-      const quantity = Number(order.items[i].quantity)
-      const p = Number(item.price)
+  //     const quantity = Number(order.items[i].quantity)
+  //     const p = Number(item.price)
 
-      price += p * quantity
-    }
+  //     price += p * quantity
+  //   }
 
-    const updatedOrder = await this.orderRepository.updateOrderPrice(id, price)
-    return updatedOrder
-  }
+  //   const updatedOrder = await this.orderRepository.updateOrderPrice(id, price)
+  //   return updatedOrder
+  // }
 }
