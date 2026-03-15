@@ -54,7 +54,7 @@ export class NotePersistence implements NoteRepository {
   async findItemsNotes(userId: string): Promise<NoteItemsResponseDto> {
     const note = await this.prisma.note.findUnique({
       where: { userId },
-      include: { items: { include: { item: true } } },
+      include: { items: { where: { orderId: null }, include: { item: true } } },
     })
 
     const noteResponse: NoteItemsResponseDto = {

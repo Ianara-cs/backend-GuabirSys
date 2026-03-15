@@ -1,40 +1,41 @@
 import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
-import { ItemsOnOrders, Order } from '../../entities/order.entity'
 import { OrderRepository } from '../interfaces/order.repository'
-import { CreateOrderDto } from '../../dtos/create-order.dto'
 import { Injectable } from '@nestjs/common'
 import { Decimal } from '@prisma/client/runtime/library'
 import { OrderOutput } from '../../outputs/order.output'
+import { Order } from '../../entities/order.entity'
+import { BatchPayloadDto } from '../../dtos/batch-payload.dto'
+import { LinkItemsToOrderDto } from '../../dtos/link-items-to-order.dto'
 import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class OrderPersistence implements OrderRepository {
   constructor(private prisma: PrismaService) {}
 
-  async createOrder(createOrderData: CreateOrderDto[]): Promise<Order> {
-    let newOrder: Order
-    try {
-      newOrder = await this.prisma.order.create({
-        data: {},
-      })
-
-      const itemsToCreate: ItemsOnOrders[] = createOrderData.map(
-        (orderItem) => ({
-          quantity: orderItem.quantity,
-          orderId: newOrder.id,
-          itemId: orderItem.itemId,
-        }),
-      )
-
-      await this.prisma.itemsOnOrders.createMany({ data: itemsToCreate })
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new Error(`Database error: ${error.message}`)
-      }
-      throw error
-    }
-
+  async create(
+    prisma: Prisma.TransactionClient,
+    tableId: string,
+  ): Promise<Order> {
+    const newOrder = await prisma.order.create({
+      data: { tableId },
+    })
     return newOrder
+  }
+
+  async linkItemsToOrder({
+    prisma,
+    orderId,
+    userId,
+  }: LinkItemsToOrderDto): Promise<BatchPayloadDto> {
+    return prisma.itemsOnOrders.updateMany({
+      where: {
+        note: { userId },
+        orderId: null,
+      },
+      data: {
+        orderId,
+      },
+    })
   }
 
   async findOrderById(id: string): Promise<OrderOutput> {

@@ -76,6 +76,7 @@ model Table {
   totalPeople Int?        @map("total_people")
   tableStatus TableStatus @map("table_status")
   createdAt   DateTime    @default(now()) @map("created_at")
+  orders      Order[]
 
   @@map("tables")
 }
@@ -91,6 +92,8 @@ model Order {
   price     Decimal?        @db.Decimal(8, 2)
   createdAt DateTime        @default(now()) @map("created_at")
   items     ItemsOnOrders[]
+  table     Table?          @relation(fields: [tableId], references: [id])
+  tableId   String?         @map("table_id")
 
   @@map("orders")
 }

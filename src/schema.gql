@@ -311,12 +311,7 @@ input ChangeTableStatusInput {
 }
 
 input CreateOrderInput {
-  order: [CreateOrder!]!
-}
-
-input CreateOrder {
-  itemId: String!
-  quantity: Float!
+  tableId: String
 }
 
 input AddItemNoteInput {

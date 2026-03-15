@@ -1,9 +1,11 @@
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { OrderService } from '../services/order.service'
 import { Order } from '../entities/order.entity'
-import { CreateOrderInput } from '../inputs/create-order.input'
 import { OrderOutput } from '../outputs/order.output'
 import { PubSub } from 'graphql-subscriptions'
+import { User } from 'src/modules/users/entities/user.entity'
+import { CurrentUser } from 'src/modules/auth/decorators/current-user.decorator'
+import { CreateOrderInput } from '../inputs/create-order.input'
 
 // const pubSub = new PubSub()
 
@@ -21,9 +23,10 @@ export class OrderResolver {
 
   @Mutation(() => Order)
   async createOrder(
-    @Args('createOrderData') createOrderInput: CreateOrderInput,
+    @CurrentUser() user: User,
+    @Args('createOrderData') { tableId }: CreateOrderInput,
   ) {
-    const newOrder = await this.orderService.createOrder(createOrderInput)
+    const newOrder = await this.orderService.createOrder(user.id, tableId)
     await this.pubSub.publish('orderAdded', { orderAdded: newOrder })
     return newOrder
   }

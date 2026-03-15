@@ -1,9 +1,15 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { OrderRepository } from '../repositories/interfaces/order.repository'
 import { Order } from '../entities/order.entity'
 import { MenuService } from 'src/modules/menus/services/menu.service'
-import { CreateOrderInput } from '../inputs/create-order.input'
 import { OrderOutput } from '../outputs/order.output'
+import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
+import { TableService } from './table.service'
 
 @Injectable()
 export class OrderService {
@@ -11,20 +17,32 @@ export class OrderService {
     @Inject('OrderRepository')
     private orderRepository: OrderRepository,
     private itemService: MenuService,
+    private tableService: TableService,
+    private prisma: PrismaService,
   ) {}
 
-  async createOrder(createOrderData: CreateOrderInput): Promise<Order> {
-    for (let i = 0; i < createOrderData.order.length; i++) {
-      await this.itemService.getItemById(createOrderData.order[i].itemId)
+  async createOrder(userId: string, tableId: string): Promise<Order> {
+    const table = await this.tableService.getTableById(tableId)
+
+    if (table.tableStatus == 'CLOSED') {
+      throw new BadRequestException('The table has already been closed')
     }
 
-    const newOrder = await this.orderRepository.createOrder(
-      createOrderData.order,
-    )
+    return this.prisma.$transaction(async (tx) => {
+      const order = await this.orderRepository.create(tx, table.id)
 
-    const order = await this.updateOrderPrice(newOrder.id)
+      const result = await this.orderRepository.linkItemsToOrder({
+        prisma: tx,
+        userId,
+        orderId: order.id,
+      })
 
-    return order
+      if (result.count === 0) {
+        throw new BadRequestException('No items to create an order')
+      }
+
+      return order
+    })
   }
 
   async getOrderById(id: string): Promise<OrderOutput> {
