@@ -34,7 +34,7 @@ export class NotePersistence implements NoteRepository {
     noteId,
   }: FindItemNoteDto): Promise<ItemsOnOrders> {
     return await this.prisma.itemsOnOrders.findFirst({
-      where: { itemId, noteId },
+      where: { itemId, noteId, orderId: null },
     })
   }
 
