@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql'
+import { Order } from './order.entity'
 
 @ObjectType()
 export class Table {
@@ -19,6 +20,9 @@ export class Table {
 
   @Field(() => Date)
   createdAt: Date
+
+  @Field(() => [Order], { nullable: true })
+  orders?: Order[]
 }
 
 const TableStatus: {

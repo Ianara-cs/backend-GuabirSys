@@ -83,25 +83,11 @@ type ItemOutput {
   menu: Menu!
 }
 
-type Table {
-  id: String!
-  number: Int
-  nameClient: String
-  totalPeople: Int
-  tableStatus: TableStatus!
-  createdAt: DateTime!
-}
-
-enum TableStatus {
-  RESERVED
-  BUSY
-  CLOSED
-}
-
 type Order {
   id: String!
   price: Decimal!
   createdAt: DateTime!
+  items: [ItemsOnOrders!]
 }
 
 type ItemsOnOrders {
@@ -110,6 +96,22 @@ type ItemsOnOrders {
   itemId: String!
   item: Item!
   quantity: Float!
+}
+
+type Table {
+  id: String!
+  number: Int
+  nameClient: String
+  totalPeople: Int
+  tableStatus: TableStatus!
+  createdAt: DateTime!
+  orders: [Order!]
+}
+
+enum TableStatus {
+  RESERVED
+  BUSY
+  CLOSED
 }
 
 type OrderOutput {
@@ -204,7 +206,8 @@ type Query {
   menu(id: String!): Menu!
   items(isPaginated: Boolean = false, take: Int = 15, page: Int = 1): PaginatedItemOutput!
   item(id: String!): ItemOutput!
-  tables: [Table!]!
+  tables(filters: TableFilterInput): [Table!]!
+  table(id: String!): Table!
   order(id: String!): OrderOutput!
   note: NoteItemsOutputs!
   allNotes: [Note!]!
@@ -222,6 +225,12 @@ type PaginatedItemOutput {
   result: [ItemOutput!]!
   total: Int!
   hasNextPage: Boolean!
+}
+
+input TableFilterInput {
+  number: Float
+  status: [String!]
+  hasActiveOrder: Boolean
 }
 
 type Mutation {

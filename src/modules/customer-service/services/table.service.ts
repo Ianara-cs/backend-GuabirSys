@@ -3,6 +3,7 @@ import { Table } from '../entities/table.entity'
 import { CreateTableInput } from '../inputs/create-table.input'
 import { TableRepository } from '../repositories/interfaces/table.repository'
 import { ChangeTableStatusInput } from '../inputs/change-table-status.input'
+import { TableFilterInput } from '../inputs/table-filter-input'
 
 @Injectable()
 export class TableService {
@@ -16,8 +17,8 @@ export class TableService {
     return newTable
   }
 
-  async getAllTable(): Promise<Table[]> {
-    const tables = await this.tableRepository.findAllTable()
+  async getAllTable(filters?: TableFilterInput): Promise<Table[]> {
+    const tables = await this.tableRepository.findAllTable(filters)
     return tables
   }
 

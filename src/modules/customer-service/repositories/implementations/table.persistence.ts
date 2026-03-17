@@ -3,6 +3,7 @@ import { PrismaService } from 'src/global/prisma-service/prisma-service.service'
 import { Table, TableStatus } from '../../entities/table.entity'
 import { TableRepository } from '../interfaces/table.repository'
 import { CreateTableInput } from '../../inputs/create-table.input'
+import { TableFilterInput } from '../../inputs/table-filter-input'
 
 @Injectable()
 export class TablePersistence implements TableRepository {
@@ -22,12 +23,22 @@ export class TablePersistence implements TableRepository {
   }
 
   async findTableById(id: string): Promise<Table> {
-    const table = await this.prisma.table.findUnique({ where: { id } })
+    const table = await this.prisma.table.findUnique({
+      where: { id },
+      include: { orders: { include: { items: { include: { item: true } } } } },
+    })
     return table
   }
 
-  async findAllTable(): Promise<Table[]> {
-    const tables = await this.prisma.table.findMany()
+  async findAllTable(filters?: TableFilterInput): Promise<Table[]> {
+    const tables = await this.prisma.table.findMany({
+      where: {
+        ...(filters?.status && {
+          tableStatus: { in: filters.status },
+        }),
+      },
+      include: { orders: true },
+    })
     return tables
   }
 

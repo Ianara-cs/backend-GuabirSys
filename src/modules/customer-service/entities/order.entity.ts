@@ -17,8 +17,8 @@ export class Order {
   @Field(() => Date)
   createdAt: Date
 
-  /*@Field(() => [ItemsOnOrders])
-  items: ItemsOnOrders[]*/
+  @Field(() => [ItemsOnOrders], { nullable: true })
+  items?: ItemsOnOrders[]
 }
 
 @ObjectType()
