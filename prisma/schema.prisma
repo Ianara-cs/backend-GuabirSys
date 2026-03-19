@@ -13,6 +13,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  MANAGER
+  CHEF
+  ATTENDANT
+}
+
+enum Category {
+  KITCHEN
+  BAR
+}
+
+enum TableStatus {
+  RESERVED
+  BUSY
+  CLOSED
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+
 model User {
   id       String  @id @default(uuid())
   name     String
@@ -33,11 +58,25 @@ model User {
   @@map("users")
 }
 
-enum Role {
-  MANAGER
-  CHEF
-  ATTENDANT
+// ─────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  @@map("refresh_token")
 }
+
+// ─────────────────────────────────────────
+// MENU
+// ─────────────────────────────────────────
 
 model Menu {
   id       String   @id @default(uuid())
@@ -46,11 +85,6 @@ model Menu {
   items    Item[]
 
   @@map("menus")
-}
-
-enum Category {
-  KITCHEN
-  BAR
 }
 
 model Item {
@@ -69,6 +103,10 @@ model Item {
   @@map("items")
 }
 
+// ─────────────────────────────────────────
+// TABLE
+// ─────────────────────────────────────────
+
 model Table {
   id          String      @id @default(uuid())
   number      Int?
@@ -81,11 +119,25 @@ model Table {
   @@map("tables")
 }
 
-enum TableStatus {
-  RESERVED
-  BUSY
-  CLOSED
+// ─────────────────────────────────────────
+// NOTE (carrinho permanente do garçom — 1:1 com User)
+//
+// Funciona como rascunho temporário.
+// ─────────────────────────────────────────
+
+model Note {
+  id     String          @id @default(uuid())
+  items  ItemsOnOrders[]
+  total  Decimal?        @default(0) @db.Decimal(8, 2)
+  user   User?           @relation(fields: [userId], references: [id])
+  userId String?         @unique @map("user_id")
+
+  @@map("notes")
 }
+
+// ─────────────────────────────────────────
+// PEDIDO
+// ─────────────────────────────────────────
 
 model Order {
   id        String          @id @default(uuid())
@@ -98,6 +150,10 @@ model Order {
   @@map("orders")
 }
 
+// ─────────────────────────────────────────
+// ITENS (compartilhado entre Note e Order)
+// ─────────────────────────────────────────
+
 model ItemsOnOrders {
   id       String  @id @default(uuid())
   quantity Int
@@ -109,28 +165,6 @@ model ItemsOnOrders {
   noteId   String? @map("note_id")
 
   @@map("items_on_orders")
-}
-
-model Note {
-  id     String          @id @default(uuid())
-  items  ItemsOnOrders[]
-  total  Decimal?        @default(0) @db.Decimal(8, 2)
-  user   User?           @relation(fields: [userId], references: [id])
-  userId String?         @unique @map("user_id")
-
-  @@map("notes")
-}
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String? @map("user_id")
-
-  @@map("refresh_token")
 }
 
 // Accounts Payable
