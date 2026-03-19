@@ -34,6 +34,21 @@ enum TableStatus {
   CLOSED
 }
 
+enum OrderStatus {
+  WAITING
+  PREPARATION
+  READY
+  DELIVERED
+  CANCELED
+}
+
+enum TicketStatus {
+  WAITING
+  PREPARATION
+  READY
+  DELIVERED
+}
+
 // ─────────────────────────────────────────
 // USER
 // ─────────────────────────────────────────
@@ -54,6 +69,7 @@ model User {
   refreshToken    RefreshToken[]
   note            Note?
   accountsPayable AccountsPayable?
+  orders          Order[]
 
   @@map("users")
 }
@@ -114,7 +130,8 @@ model Table {
   totalPeople Int?        @map("total_people")
   tableStatus TableStatus @map("table_status")
   createdAt   DateTime    @default(now()) @map("created_at")
-  orders      Order[]
+
+  orders Order[]
 
   @@map("tables")
 }
@@ -126,26 +143,39 @@ model Table {
 // ─────────────────────────────────────────
 
 model Note {
-  id     String          @id @default(uuid())
-  items  ItemsOnOrders[]
-  total  Decimal?        @default(0) @db.Decimal(8, 2)
-  user   User?           @relation(fields: [userId], references: [id])
-  userId String?         @unique @map("user_id")
+  id           String  @id @default(uuid())
+  observations String?
+  user         User?   @relation(fields: [userId], references: [id])
+  userId       String? @unique @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items ItemsOnOrders[]
 
   @@map("notes")
 }
 
 // ─────────────────────────────────────────
-// PEDIDO
+// ORDER
 // ─────────────────────────────────────────
 
 model Order {
-  id        String          @id @default(uuid())
-  price     Decimal?        @db.Decimal(8, 2)
-  createdAt DateTime        @default(now()) @map("created_at")
-  items     ItemsOnOrders[]
-  table     Table?          @relation(fields: [tableId], references: [id])
-  tableId   String?         @map("table_id")
+  id        String      @id @default(uuid())
+  code      String?
+  price     Decimal?    @db.Decimal(8, 2)
+  status    OrderStatus @default(WAITING)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  table   Table?  @relation(fields: [tableId], references: [id])
+  tableId String? @map("table_id")
+
+  waiter   User?   @relation(fields: [waiterId], references: [id])
+  waiterId String? @map("waiter_id")
+
+  items   ItemsOnOrders[]
+  tickets Ticket[]
 
   @@map("orders")
 }
@@ -163,8 +193,30 @@ model ItemsOnOrders {
   itemId   String  @map("item_id")
   note     Note?   @relation(fields: [noteId], references: [id])
   noteId   String? @map("note_id")
+  ticket   Ticket? @relation(fields: [ticketId], references: [id])
+  ticketId String?
 
   @@map("items_on_orders")
+}
+
+// ─────────────────────────────────────────
+// TICKET (fila por setor — cozinha ou bar)
+// ─────────────────────────────────────────
+
+model Ticket {
+  id     String       @id @default(uuid())
+  sector Category
+  status TicketStatus @default(WAITING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String @map("order_id")
+
+  items ItemsOnOrders[]
+
+  @@map("tickets")
 }
 
 // Accounts Payable
